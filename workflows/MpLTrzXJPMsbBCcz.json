@@ -1,0 +1,173 @@
+{
+  "active": true,
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-27T19:51:43.850Z",
+  "id": "MpLTrzXJPMsbBCcz",
+  "meta": null,
+  "name": "Telegram Upwork Notif",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2ae2731d-f9c8-432f-9b21-dbdc0299faa7",
+      "name": "Telegram Trigger",
+      "webhookId": "6720cc5c-42a4-4858-925a-74ec0656ac3e",
+      "credentials": {
+        "telegramApi": {
+          "id": "KUDPSwACHXZk7PQt",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=I am a workflow automation specialist. I'm looking to apply for jobs related to my expertise that is automating business processes, repetitive tasks. Things that can be solved using tools like Zapier, Make.com or n8n are my favorites and I am ideally looking for jobs that could be eventually be targets to offer my Business Workflow automation subscription. I also accept jobs related to Google looker.  I'm definitely not looking for secondary job titles such as project manager, web developer or backend developer. Please assess the following UPWORK job posting and decide if it's relevant to my skill set:  \n\n {{ $json.message.text }}\n\nOnly answer with Yes or No"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        220,
+        0
+      ],
+      "id": "03e8e3cd-ed7a-4a62-851d-661a09b24fd2",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "JnJlqMDcZRi5yZz4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "@upworkybotardo",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "42fee6ce-b896-422c-ba41-2042ae9757bc",
+      "name": "Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "KUDPSwACHXZk7PQt",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8b8f2264-38fa-4f4d-8357-aef9aa4cb9a5",
+              "leftValue": "={{ $json.message.content }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "227ae257-26f5-4908-85b5-8082adf8d100",
+              "leftValue": "={{ $json.message.content }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "6bbf5106-4efc-4e89-8ae5-30d5f7aff2ec",
+      "name": "Filter"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-27T20:57:11.000Z",
+  "versionId": "b6ba3d95-363c-4812-b301-9821aee27151"
+}
