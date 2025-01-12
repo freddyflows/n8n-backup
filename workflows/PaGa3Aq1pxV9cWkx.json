@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "n8n": {
       "main": [
@@ -533,7 +533,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "position": [
         1280,
-        586.1164603611751
+        580
       ],
       "typeVersion": 3
     },
@@ -693,9 +693,13 @@
   ],
   "pinData": {},
   "settings": {},
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-01-07T18:09:05.000Z",
-  "versionId": "851df291-12b5-4fc3-a448-db3ae88d9891"
+  "triggerCount": 1,
+  "updatedAt": "2025-01-12T13:46:48.000Z",
+  "versionId": "0234a5bc-aa8d-41a4-8f1e-f051f24bdef7"
 }
