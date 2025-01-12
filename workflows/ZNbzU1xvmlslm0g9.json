@@ -1,18 +1,520 @@
 {
-  "active": false,
-  "connections": {},
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2025-01-07T14:39:49.636Z",
   "id": "ZNbzU1xvmlslm0g9",
   "meta": null,
-  "name": "After Zoom discovery meeting --> Take fireflies summary and create proposal on Pandadoc",
-  "nodes": [],
-  "pinData": {},
+  "name": "Linkedin AI Scraper",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cdd169e2-050a-4e47-9bb4-a6207a257ac6",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3c573197-4a92-47c3-8fd7-f3613a9458c8",
+      "name": "Webhook",
+      "webhookId": "cdd169e2-050a-4e47-9bb4-a6207a257ac6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0e3cf316-b547-4c07-9335-27d43fc1b4fd",
+              "name": "items",
+              "value": "={{ $json.body }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "4bfa4529-11af-4b04-8a6d-505e77f6b619",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        720,
+        -60
+      ],
+      "id": "13d77607-bfd2-4210-a720-530d7eb204c0",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "def37f46-b823-48a7-b6e5-fca538d010fb",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Analyze the following job posting and determine if it is suitable for someone with workflow automation skills using Zapier, Make, Power Automate, and CRMs like HubSpot, ClickUp. Not robotic RPA jobs which are different:\n- Also: Posts in a different language than English or Spanish aren't suitable\n- Jobs located in third world countries such as South America, Africa, India shouldn't be considered either.\n\nTitle: {{$json[\"title\"]}}\nDescription: {{$json[\"description\"]}}\nCompany: {{$json[\"company\"]}}\nLocation: {{$json[\"location\"]}}\n\nReply with \"YES\" or \"NO\"."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1000,
+        -40
+      ],
+      "id": "e532113f-6734-4bd3-b440-ff55c4830ccf",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "JnJlqMDcZRi5yZz4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app5pllDypwS5j5fs",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/app5pllDypwS5j5fs"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblEH7eNTW3vsRu9k",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/app5pllDypwS5j5fs/tblEH7eNTW3vsRu9k"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $('Loop Over Items').item.json.title }}",
+            "Link": "={{ $('Loop Over Items').item.json.link }}",
+            "Description": "={{ $('Loop Over Items').item.json.description }}",
+            "Location": "={{ $('Loop Over Items').item.json.location }}",
+            "Company": "={{ $('Loop Over Items').item.json.company }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1900,
+        40
+      ],
+      "id": "9187026b-f414-4a18-b7b7-fd9d99df2a7c",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "EUVtRR6G16rrZDGL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6af90480-0260-4332-914d-3ff6ed18573f",
+              "leftValue": "={{ $json.message.content }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "7e8c3efb-99be-4644-a990-c5eb79a66bd5",
+              "leftValue": "={{ $json.message.content }}",
+              "rightValue": "YES",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "86233355-1d51-4a51-a32c-d51483f5182c",
+              "leftValue": "={{ $json.message.content }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1460,
+        -40
+      ],
+      "id": "2db0827e-1fc1-4ceb-bf67-b2f9372bf074",
+      "name": "If"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.freddyflows.com",
+            "user-agent": "python-requests/2.31.0",
+            "content-length": "73626",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate",
+            "content-type": "application/json",
+            "x-forwarded-for": "201.219.110.161",
+            "x-forwarded-host": "n8n.freddyflows.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": [
+            {
+              "title": "Business Analyst\nBusiness Analyst",
+              "link": "https://www.linkedin.com/jobs/view/4114823777/?eBP=CwEAAAGUTGmBSgpb_xjThtzxYhGXIatgz203KXONdKfHR77BWuXRPZQjW5e_moNrP6QQum1q3DCjg9IgkBIu6rvNEpkozlCDG70OlUff2zEb2rkMmYqXT2cChNH4-JMRI0GZ96gpit-_qjgEdRVqMYaYyUz2lI-oguPeVmnwj2U55QDy_o29I3SEx3TYo_qGg03evleOVY7rcjZZL2D_hrzl42rnPASiZckPRkCwInvbet7akJeWqacOEPyPISXQnCOFmsrXYVDZi3NHDBF3bidie3TPIyW7Xq1eJpQuwm8Gg6Iy9chOKgFRNZP9UlwUQbs58fVpgG7iw_fVwkhPVNFcdtQ66B0APnb0sjknCQDB06auev00lELumpHjRpycIc8UHkn3PBvplPPJIaSdcZzAG1qiTWFPFwnIJBkitp0TsgVguK3i9woH19QitY9F1OvW0t2AO1Fsg09tCGPDcYHwHhnB7DtnCFXbBXVqyDty0fLfli6UmcnZr3uRQ0OUt-2kkSSLqzExXqlTydKJQ30fDw&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=tIXnTye7qlxkKUnZGdmVJA%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nA hazai üzleti és IT tanácsadási piac egyik olyan innovatív szereplője vagyunk, aki egyben adatelemzésre épülő megoldásokat is fejleszt. Cégünket a Budapest Business Journal az általa összeállított vállalati rangsorban a vezetési tanácsadók között az elmúlt években több alkalommal piacvezetőként hirdette ki.\nA Stratisnál a csapatban bízunk, és azokat a játékosokat keressük, akik a legjobban illenek közénk, dinamikus, proaktív és elkötelezett embereket. A problémamegoldásban hiszünk, nem a rutinban, a tudásmegosztásban, nem a merev struktúrákban. Kreatív és talpraesett, de pontos és hatékony kollégákat keresünk, egy csipetnyi zsenialitással.\nPartnereink belénk vetett bizalma és a prémium szolgáltatásaink iránt megnövekedett igény indokolttá teszi csapatunk bővítését.\n\nHa vannak ötleteid, amikkel valódi értéket lehet teremteni, szeretnél egy profi és együttműködő csapat tagja lenni, és magadra ismersz a következő leírásban, jelentkezz Business Analyst pozícióba. Munkavállalói és alvállalkozói konstrukcióban is keresünk kollegákat.\n\nFeladatok:\nÜzleti igények felmérése, elemzése, dokumentálása, alternatívák kidolgozása a leghatékonyabb működésre és legoptimálisabb megvalósításra,\nInformatikai rendszerhez kapcsolódó üzleti és folyamat modellezés, a szoftverrel támogatni kívánt folyamatok elemzése,\nAz igények alapján fejlesztési javaslatok, követelmények meghatározása\nKPI rendszerek tervezése és bevezetése\nA rendszerszervezők, solution architect-ek támogatása a specifikáció értelmezésében.\nA tesztelés támogatása, koordináció ellátása\nA fejlesztések ellenőrzése az üzleti követelmények tükrében\nDokumentációk készítése (üzleti leírások, szabályrendszerek)\nKapcsolattartás informatikai és üzleti szakterületeink között\n\nElvárások:\nEgyetemei és/vagy főiskolai diploma (gazdasági vagy műszaki / informatikai végzettség)\n3-5 év Business Analyst munkakörben szerzett szakmai tapasztalat\nTárgyaló- és írásképes angol nyelvtudás\nNagyvállalati projekt tapasztalat\nKiváló dokumentációs készség, modellezéshez használt szoftver(ek), módszerek készségszintű használata)\nAnalitikus gondolkodásmód és ügyfélközpontúság\nKonstruktivitás, eredményesség, logikai képességek\nJó problémamegoldó képesség és kommunikációs készség\nÖnálló, határozott, agilis, terhelhető személyiség\nBelső motiváció, csapatban gondolkodás\n\nElőny:\nSzoftverfejlesztési területen, szoftverfejlesztő/tanácsadó cégnél szerzett szakmai tapasztalat\nProjekt vezetői tapasztalat\nAdatmodellezési, adatbázis, SQL és BI rendszerek ismerete\nBanki, telekommunikációs, energetikai, egészségügyi vagy egyéb multinacionális cégeknél szerzett projekt tapasztalat\n\nMunkavégzés helye: Alapértelmezetten Budapesten hibrid munkavégzés (iroda és home office), illetve ügyfeleink igénye alapján ügyfeleink telephelyén",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Data Engineer\nData Engineer with verification",
+              "link": "https://www.linkedin.com/jobs/view/4118398711/?eBP=CwEAAAGUTGmBSpQ53JobTJqxz2-GBTnhQsBR0xU5kAqhj6KYlJTQVVjPWrGIoDlbKrFpuGn-MJVdxJpLYdiTa99QtiD2wJzQfATyRNtAGoILxLRVyfEV7c_xqrmJeSmyjMFkFs41eP0Ax4SadXzT0fMepqke2SQKjbjVnBF3YX2cPOJcWF7bCbMysIQhLjkcnnsVGfoXdv786pGpcTg-C903UnVkq3jM-rPVzuWheQ5ExaNBlkjar5Ptb84XE1GBkYKn6N-H-oBH_3uvYywGwNajRf-E8-ehlp_rGiKPnweEgTMDlTiRPeICS5qtYlazuIcVK2_cVB0u8Jzf2fMPpBdr_nvrtMlGQ-DL9Jz0KlI7FBJqWTvrumLzjREutB6a8dExQnKy3F0zB4AeIfa1fO-Pfc4YjFNFVEf3LBe2FWyWU4DRc5WZGQYY7ZVNWXTlwSQXL4pmj_Ak5NKQmOk3awDYy5wd8TwymABBz1vzotJlihJRBwy_uuNisJknjQ&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=abxgSWOcAsUKgSVuPaWqQA%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nBij BAS Consultancy werk je als Data Engineer aan uitdagende projecten bij interessante organisaties in verschillende sectoren, zoals de zakelijke markt, gezondheidszorg en publieke sector. Jij zorgt ervoor dat data wordt verzameld, geordend en omgezet in waardevolle inzichten die organisaties helpen om efficiënter en toekomstbestendig te opereren. Of je nu binnen de private sector, de zorg of de overheid werkt, jouw expertise zorgt voor tastbare resultaten die het verschil maken.\n\nBAS heeft voor jou:\nJe bent veel zelfstandig op pad, maar dat betekent niet dat jij je BAS-collega’s nauwelijks ziet. Op onze borrels, trainingen of gezellige uitjes kom je ze regelmatig tegen. Je komt terecht in een persoonlijke, ondernemende en betrokken organisatie, waarin we graag met elkaar samenwerken.\nEen vast bruto jaarsalaris tot € 64.476,-, inclusief vakantiegeld, bij een 40-urige werkweek en afhankelijk van je ervaring, of een aantrekkelijk basissalaris gecombineerd met een onbeperkt bonussysteem.\nOpleidingsbudget van € 6.000,- per jaar. Dit kun je besteden aan het opleidingsinstituut Creating Insights.\nDe mogelijkheid om na het eerste jaar een relevante post- of executive master te volgen.\nUitbetaling van 140% voor overuren. Maak ze niet te veel, want bij BAS vinden we een goede werk-privébalans belangrijk.\nEen mobiliteitsbudget met keuze uit een elektrische leaseauto, NS Business Card (inclusief CO2-bonus) of mobiliteitsvergoeding.\nDirect een contract voor onbepaalde tijd, collectieve pensioenregeling en aantrekkelijke bonussen.\n28 vakantiedagen op basis van 40 uur per week.\nToegang tot een inspirerend netwerk van hoogopgeleide en ondernemende collega's, met regelmatige trainingen, borrels en teamuitjes.\n\nDit ga je doen:\nSamen met de business behoeften op het gebied van analytics bepalen en omzetten naar concrete oplossingen.\nVerzamelen, opschonen en structureren van data uit diverse bronnen.\nOntwerpen en ontwikkelen van dashboards en rapportages met behulp van tools zoals Power BI of Tableau.\nAdviseren over procesoptimalisatie en het verbeteren van dataflows binnen organisaties.\nImplementeren van ETL-processen en programmeren in SQL en Python om data toegankelijk en bruikbaar te maken.\n\nDit bied jij BAS:\nEen afgeronde hbo- of wo-opleiding richting Data Science, AI, Wiskunde, Econometrie, Business Information Management of vergelijkbaar.\nMinimaal 2 jaar ervaring in een rol als Data Engineer of vergelijkbare functie.\nErvaring met het ontwikkelen van ETL-processen en programmeren in SQL en Python.\nKennis van BI-tools zoals Power BI, Tableau of vergelijkbare systemen.\nSterke analytische en communicatieve vaardigheden en een oplossingsgerichte mindset.\n\nOrganisatie\nAls Data Engineer bij BAS Consultancy ben jij de drijvende kracht achter het creëren en optimaliseren van Business Intelligence-omgevingen bij onze opdrachtgevers. Jij duikt in complexe datalandschappen, stemt af met verschillende afdelingen om het ideale plaatje helder te krijgen en vertaalt brondata naar begrijpelijke, gestructureerde en hoogwaardige datasets.\nJe zorgt ervoor dat data niet alleen beschikbaar, maar ook bruikbaar en inzichtelijk wordt gemaakt. Dit doe je door slimme structuren en visualisaties op te zetten, waarmee organisaties data-gedreven beslissingen kunnen nemen om doelen te realiseren.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "BI Developer\nBI Developer",
+              "link": "https://www.linkedin.com/jobs/view/4115465672/?eBP=CwEAAAGUTGmBSpFzmfmHeTmK5je3nMliNiVrI5jVA5UKC9EolpqfkkTKUGbuy8ULENiPW3AEFI2q_5TeiNcAPubAAtAe6dMBzmxOnPqKHYa2G6iGsAOsBPEfx3taz3ezoo3I0YdtjRmbNOxV9IHFv7HBc4q2bJkIuQ6wIPvreIGHSsxg5VlhrTz4uzqu-KuDLPYcCIV7LxPlbNIj1uZH0KIZyVHvRYAXPXlB8bH5VRuug7IVJIhMOLW_MCyKG8tjr6Fx5L46zsweqj2UMl1e3juomKZCKsqKMhXaUotBoNsR5SuC844El0_m3Ypxyb1O4ubuC4o3d7daFq2rMbByx1bd6d3A-c58vyTgbZYV2bk5ddGR0CcpMHUrG1M2AA4h-5r-4DMKhYNi4wGWnPu2hpsyPXrPxZl_Xd-eimzcbjI9_yoq3XBRcTFBDY-KFR8ciPcZOEpA_yoQBreZ84YBjLGNTTjcibchaum233CnHLXpvnkK__1kZrR7Mm2oqLhMr4oxD32cPw12gEtj_Ory&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=zLuZLLNo31jNAru6v2sMwQ%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nABOUT US \nOak Hall Consulting (OHC) is an energy consultancy specializing in electricity and gas market design, energy expertise provision, business, system, digital transformation and project delivery. We work with a number of clients within the energy space in Ireland, Northern Ireland and Europe. Our projects extend from setting up new energy businesses, undertaking technical, systems and operational transformation to specialist energy industry design and delivery of end to-end energy solutions.. Our broad scope of services is delivered by our core team of business analysts and consultants, supported by contracted specialists such as project and test managers.\n\nJOB DESCRIPTION\nOHC is recruiting a BI Developer on a 12-month contract (daily rate) for a client programme where OHC is operating as a strategic partner. OHC is not offering sponsorship for this role. Our energy client is growing and developing their BI and Data team, enabled partly through the implementation of a new Utilities ERP solution based on MS Dynamic's 365. The development involves replacing 4 separate systems operating across different energy types in different jurisdictions to a consolidated platform.\n\nThe successful candidate will join our clients growing BI and Data team, working on the design and development of BI reports using SQL and Power BI to meet business requirements based on data from the new system. The candidate will also be required to work with our clients data engineers to identify and resolve data quality issues and support with the development of a Data Warehouse.\n\nThe candidate will work closely with business users to define and design the reporting & BI requirements before building out the requirement using the data sources available. As well as the technical skillsets required, the ability to understand both business processes and IT/data processes will be key. The candidate, through excellent technical and communication skills, must be able to bridge the gap between business and data engineers to deliver fit for purpose solutions. The goal is to deliver high-quality reporting and insight to help drive the business towards data-driven decision-making, while working constantly with the data engineers to improve and advance our BI capabilities. As the candidate will belong to the project team involved in the implementation of a new data environment, technical experience of data transformation, ETLs, and designing/building data warehouse will be a significant advantage.\n\nResponsibilities\n• Develop reports and dashboards in Power BI to meet the requirements of business users and to deliver data-driven insights that will benefit the business\n• Work with the business users to understand processes, define the requirements, and use your knowledge of the business data sources and data models to deliver high-quality output\n• Work with data engineers to ensure reports, dashboards etc are accurate, up-to-date, and fit-for purpose at all times\n• Liaise with business users and data engineers as and when new data is required to investigate the source, create data definitions if needed, and ensure the new data can be sourced, ingested and integrated into the data lake/warehouse\n• Support data engineers to develop Data Warehouse and/or other solutions to optimise BI capabilities from the new system going forward\n\nQualifications & Experience\n• Relevant 3rd level degree or Certification\n• 3-4 years’ experience in BI and Reporting roles\n\nRole specific (technical) knowledge / skills: \n• Data Warehouse knowledge and practical experience incl. Fact & Dimension models\n• Excellent skills and experience in both Power BI and T-SQL are essential\n• Experience in documenting report requirements, data definitions, change control, and reporting processes\n• Excellent communication and interpersonal skills\n• Exceptional analytical, conceptual, and problem-solving abilities\n• Understanding of the Energy Utility Market a significant advantage\n\nBenefits \nWe offer competitive daily rate contracts\n\nWork Arrangement \nHybrid with initial part of assignment 3 days per week office based",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "IT Business Analyst\nIT Business Analyst with verification",
+              "link": "https://www.linkedin.com/jobs/view/4117543967/?eBP=CwEAAAGUTGmBSjJ9KQY3JGIDiPC8s0XOH_wlwphRrHSIgm4AlzxtwCn7osekXAjGNgZcWbxRrR-BrVtMS4V6fcydWEvBeApmProWGRzR80JG4CmTJrLV68EsjDQzgRGx-Wv-BzLA8UbyDMaoooMP1xsMB0ePMuRXDoqc0Pe4OQJNE057yuURxLYxb8luBf_2VJ2oHWrqHJgcCrvkzCdlrhshZ9wcHCx6LOzGfiNcSN5NiuaVdhxNm6jxxWXBvYvU6nuAtzf-b6HRjFTG18acNfmsFO-MP8VvFgs1UFv0k0HVPR8r_YQcgTlUJ7LoRXiL3KtPmpYe7mnujzu-YUALhdq6VvNfY-OktzkqNggcUsmZdw5J90yzS-jOkqmMJfsBjR106jl1X8ur75kwGa9dz_0RqAXg0uQK1yhdCmmEQxL0Qk9frE2NxiVQQIq0vgpAgXiqmmYZFojIvgNxnPkpET1tmt459TNnoefeYciZ4yHvIZS-7iEkigUNgtP8kJCO&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=TW0ptGHfC77Iv3%2B7sGYyVQ%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nOver Buildwise\nAls sterk, dynamisch en groeiend onderzoeks- en innovatiecentrum zijn wij steeds op zoek naar nieuwe collega’s die graag willen meewerken aan de toekomst! Europa moet klimaatneutraal worden tegen 2050, ons gebouwenpark staat voor een massale energetische renovatiegolf en circulair bouwen moet verder ontwikkeld worden om het gebruik van eindige hulpbronnen te beperken. Ook de productiviteit van de bouwsector moet de komende jaren sterk toenemen om concurrentieel te blijven.\nBuildwise is opgericht door en voor de bouwsector en heeft als missie om bouwprofessionals te ondersteunen om de kwaliteit, productiviteit en duurzaamheid te verbeteren en de weg vrij te maken voor innovatie op werven en in bouwbedrijven.\nBij Buildwise zoeken we uitzonderlijke talenten om deze boeiende maatschappelijke en technische opportuniteiten met beide handen te grijpen en een steentje willen bijdragen aan een toekomstige groenere planeet! Of je nu een ervaren professional bent of pas afgestudeerd, je krijgt de kans om samen te werken op innovatieve en uitdagende projecten.\n\nJouw Missie?\n Je versterkt het bestaande team van Business Analysts binnen de IT-afdeling.\n Je speelt een sleutelrol in de digitale transformatie van Buildwise.\n Je positie stelt je in staat om de strategische prioriteiten van het bedrijf te begrijpen en actief bij te dragen aan de uitvoering van deze strategie.\nAls Business Analyst draagt je actief bij aan het formaliseren en documenteren van de behoeften van de verschillende businessafdelingen. Je bent in staat om nieuwe processen voor te stellen aan de businessverantwoordelijken om het gebruik van geïntegreerde IT-oplossingen (ERP, CRM, Marketing, ...) te maximaliseren.\n Als projectmanager stuurt je de implementatie van IT-oplossingen uitgevoerd door externe partners.\nJe maakt integraal deel uit van het IT-team, dat bestaat uit andere Business Analysts, een Enterprise Architect en een Software Engineer.\n\nJouw Belangrijkste Taken:\nBusiness Analyse:\nNeemt deel aan de voorbereiding van verschillende projecten, strategische richtingen, de selectie van IT-partners en IT-oplossingen.\nDraagt bij aan de transformatie van Buildwise naar een datagedreven organisatie.\nZorgt voor continue verbetering van bedrijfsprocessen en -applicaties.\nVertaalt businessbehoeften naar functionele specificaties (user stories, procesdefinities, API’s, datamodellen, wireframes, …).\nWerkt nauw samen met de IT-afdeling om de IT-strategie en roadmap te implementeren.\nPromoot actief het gebruik van data binnen de organisatie als \"data champion\" en creëert een datagedreven cultuur.\nAdviseert de verschillende afdelingen en divisies over technologische keuzes voor geïntegreerde applicaties.\nTreedt op als Change agent en draagt bij aan de optimalisatie of vervanging van bestaande systemen.\nBouwt sterke relaties op met verschillende business stakeholders en externe partners.\nIs verantwoordelijk voor de roadmap van geïntegreerde applicaties (MS Dynamics, Dataverse, Hubspot, ...).\nCentraliseert en organiseert documentatie over verschillende oplossingen ter ondersteuning van kennisdeling binnen de teams.\nProjectmanagement:\nDefinieert de scope en maakt een eerste budgetinschatting van projecten in samenwerking met technische teams.\nStelt de planning op en volgt de voortgang van projecten (budget, deadlines).\nWaarborgt de kwaliteit van oplossingen door testplannen op te stellen en uit te voeren.\nStuurt externe partijen/consultants aan en zorgt ervoor dat projecten binnen tijd, budget en kwaliteitsnormen worden opgeleverd.\n\nJouw Profiel:\nMaster in informatica, bedrijfsbeheer of een gelijkwaardig niveau.\nMinimaal 5 jaar relevante ervaring als Project Manager, Product Owner, Business Analyst of in een vergelijkbare rol.\nGrondige kennis van de IT-markt en inzicht in verbanden tussen domeinen: applicaties, databeheer, infrastructuur, enz.\nErvaring met projectmanagementmethodologieën (Prince II, PMI, Agile); certificering is een pluspunt.\nProfessionele ervaring met MS Dynamics Suite en in één of meer van de volgende domeinen: ERP, CRM, Marketing Suite, Content Management System.\nErvaring in het ontwerpen van gebruikersinterfaces (UX) voor applicaties.\nErvaring met datavisualisatiesoftware (MS Power BI is een pluspunt).\nLeergierig en geïnteresseerd in innovatieve technologieën en markttrends.\nErvaring met analyse van operationele processen en systemen.\nAutonoom, zelfstandig en proactief.\nTeamspeler.\nZeer goede kennis van Nederlands en een goede kennis van Frans. Kennis van Engels is een pluspunt.\n\nWat mag je van Buildwise verwachten?\nEen heel gevarieerde en uitdagende job.\nEen zinvolle werkomgeving voor jezelf, voor de bouwsector en de planeet.\nEen open, betrokken en diverse werkplek. Waar je de kans hebt om een impact te hebben.\nOndersteuning via ons integratieproces, opleidingsmogelijkheden en expert- coaches.\nEen vast contract en concurrentiële arbeidsvoorwaarden.\nFlexibele werkuren en een telewerkbeleid voor een goed evenwicht tussen werk en privé. Buildwise hecht veel belang aan welzijn!\nJe gaat werken vanuit onze locatie te Zaventem maar behoudt de connectie met onze andere zetels.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Business Analyst IT (H/F)\nBusiness Analyst IT (H/F)",
+              "link": "https://www.linkedin.com/jobs/view/4082828803/?eBP=CwEAAAGUTGmBSmtc7XYQRtrQnqvcUCiMY_KQjD_TSwujF_DM8S6249D8lQ_zyN-7qn9NJi-Q5XnYBiv99YbmK-aLBd7eK84BEwz1WRbLky49zLtXdZyhS-CQad7hnDzxVbvBBpQospg2LuKluAmkgMm-aXIUZ4Z4_CYwylBqbhxiX1c5gzgnjgCknaA2gxa_IBYarhy8zAWqbwtc71ezspgK0aNTL9zSgAnm_ZFKNnTZc_qZaRsts_Z6_HlnWasEFXhONNfqx_fuATUsUXv8opIeOO3u_7RGiPjnQa8fCXWfNV0IDFKmnhdnMm_DD66UOOdqcGYBoHWCT7-Q54QCwAhvBx-BwTzshVOBTuEXRn3f39c_mgEatBqZBMopeyGsTA2eoKuBKkpyypLFQyzZgr-P-2U5opV0XmHN--coRyPifS5xDxvi19KtzCiMKmh-HlHEQnfiRhqZZPJ3ru80YTdsLo1SLocNS-Zp0fHKcwo4ZWtsyeZSTD4dyalYNJzZ&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=nyLsj8rxHiDOlw9nB5KiLg%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nTous nos postes sont ouverts au télétravail mais ne sont pas ouverts aux contrats freelance ni au portage salarial\n\nGroupe indépendant de conseil en transformation digitale de près de 1800 collaborateurs, Néosoft s’est construit, depuis 2005, sur un modèle qui place l’excellence, le dépassement de soi et la RSE au cœur de sa stratégie.\nEn nous rejoignant, vous intégrez des communautés d’experts et de talents qui vous permettent de développer vos compétences et d’offrir à nos clients le meilleur accompagnement possible.\n\nNotre savoir-faire s’articule autour de nos 6 domaines d’expertise : \nConseil & Agilité\nCybersécurité\nData\nDevOps\nInfrastructures & Cloud\nSoftware Engineering\n\nNous recherchons pour intégrer notre agence parisienne, un profil Business Analyst IT (H/F)\n\nEn intégrant notre agence parisienne pour un client du secteur bancaire, voici des exemples de missions qui vous seront proposées :\n\n🎯 Vos missions :\n\nCadrer fonctionnellement et piloter les sujets qui vous sont confiés au sein de l’équipe (ex : financement structuré, conformité, trade finance, RGPD) : MVP / Story Map / Product Vision Board\nProjet d'implémentation d'une plateforme de pricing et de valorisation\nConcevoir et proposer des solutions fonctionnelles\nSpécifier et rédiger les users stories\nElaborer les stratégies de test et réaliser les recettes\nAssurer le reporting, la communication et la documentation sur vos sujets\nAssurer le bon fonctionnement des outils en production (suivi, gestion des incidents, etc.).\nExpertise et connaissance des messages protocolaires des réseaux CB, VISA et MC.\nBudgétisation\n\n\nEnvironnements techniques :\nMySQL / SQL / VBA\nEnvironnement Agile\nJira\n\n📝 Votre profil\n\nVous détenez à minima 8 ans d'expérience professionnelle reconnue en finance/banque de détail, dans laquelle vous avez pu confirmer et développer vos compétences sur un poste similaire.\nVous avez une très bonne connaissance des produits financiers ainsi que le l'expérience avérée sur des projets agiles, vous maitrisez l'anglais.\nSociable, pédagogue et diplomate, vous avez le sens des initiatives et appréciez le travail en équipe.\n\n👉 Votre carrière chez Néosoft \n\nDepuis sa création, Néosoft place ses collaborateurs au cœur de sa stratégie. Notre culture pourrait se résumer en un mot : le collectif.\nNos communautés d’experts vous donnent la possibilité d’apprendre, mais aussi de transmettre et de partager vos savoirs pour faire progresser les autres.\nNous veillons à ce que chacun bénéficie d’un accompagnement de proximité et d’un suivi de carrière personnalisé auprès de votre manager dédié :\n1 bilan d’activité trimestriel pour suivre le développement de vos compétences\n1 entretien d’évaluation qui a lieu chaque année pour évaluer votre performance et déterminer vos nouveaux objectifs\n1 entretien annuel auprès de votre RH dans le but de cartographier vos nouvelles compétences pour échanger sur vos projets professionnels et souhaits de formation\n\n👉 Vos avantages\n\nFormations et développement de l’expertise : \n\nVous disposez de temps alloué et rémunéré en contribuant au développement de votre expertise technique et de celle du groupe (Participation à des Tech days, animation d’une conférence à l’interne ou à l’externe, rédaction d’articles, rencontres avec nos candidats en processus de recrutement…)\nUn abonnement illimité LinkedIn Learning offert\n\nBien-être au travail : \n\nUn accord de télétravail flexible jusqu’à 100% de télétravail et personnalisable\nUn partenariat avec Gymlib qui favorise le sport en entreprise\nDes initiatives locales (afterworks, défis sportifs, team buildings, …)\n\nEt bien plus encore : \n\nParce que les meilleurs cooptent les meilleurs, une politique de cooptation attractive rémunérée dès l’arrivée du collaborateur\nEn plus de votre salaire : participation, compte épargne temps, actionnariat...\n\n👉 Votre parcours candidat\n\nNotre processus de recrutement se compose de deux étapes clés :\nUn entretien de recrutement RH avec un Talent Acquisition Spécialist pour dresser un bilan de votre parcours professionnel et identifier les trajectoires de carrière possibles au sein de notre groupe\nUn entretien d’évaluation technique pour réaliser un diagnostic de vos compétences techniques et identifier les compétences sur lesquelles poursuivre votre évolution\n\nVous aurez également la possibilité de rencontrer pour compléter votre processus un acteur de notre pôle Business ou un pair de votre métier pour échanger sur son expérience collaborateur.\n\nNous avons hâte de vous rencontrer !\n\nA bientôt,\nL’équipe Néosoft 🖐",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Business Analyst\nBusiness Analyst",
+              "link": "https://www.linkedin.com/jobs/view/4117430006/?eBP=CwEAAAGUTGmBSnaS_AhY9HqYocXPG4rvWjxt6lL07sZmy1FX9f4m9RPNVLzvyc06eVSlxKoqEyJIXmwmWqbl-dyxiXWoc9tERaOHvAWrsMPxlEpO5Fc8oomOBT0_S_jen6a5qajkL7c9pQI_qHTA0sBaVFhABx7yrspNJX5TY5kU6YP_EsqsYs89LoZyvhF4AaQGk1HIXBQVdb2X-krFRojUuhEL-tPB9bUAow-0xrZNmIpwC6-bIYlGBRvWZiI0K9ly94WG4tDBfP09rB66ZIzyETdb0_vC7d3J3aH-9qQipVe9i0f3SlC9pBD0mO9b3ySjBh9FQpgFCdGUfSMNGb_ps7ZS8lR2NbVnB6iLIXeU4mGrXJLlsAxP0aeLgAGGRx_YswuYS_qfaKHawST_qpPdeBb41skOel0J_Sr2oq_BD3mCwz0wKvt6KWtpUWB9fDqThFncpJvNrKk_Dtw6C3ZPgEstoysSvue_6Clcq8jxRgXoKmDrFM3TQQ7__w&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=dU0YSzsAI3QxWGe2oCPJQQ%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\n// Bee motto\nif (me.dareToChange() == true) { me.sendCV(); me.happy(true); }\n\nSomos uma consultora de tecnologias de informação com foco em projetos de Engenharia associados às Tecnologias da Informação. Atuamos em dois eixos principais: OTS e DxSpark, concentrando o que fazemos de melhor em cada um deles. Contamos com uma equipa diversa, de cerca de 200 profissionais, apaixonados e comprometidos em transformar desafios em oportunidades.\nEntra em contato connosco e embarca nesta jornada rumo ao sucesso, aqui vais encontrar o teu próximo desafio #daretochange.\n\nDare to Have:\nFormação superior em Engenharia Informática ou similar é valorizado;\nExperiência profissional como Business Analyst superior a 4 anos;\nExperiência em projetos de desenvolvimento aplicacional;\nExperiência em levantamento de requisitos de negócio e transformação em requisitos funcionais;\nFluência em Português e Inglês;\nRegime híbrido em Lisboa ou Porto.\n\nDare to live:\nGlobal Mindset | integração numa empresa internacional de rápido crescimento;\nContinuous Learning | plano de formação e certificação gratuitas em tecnologias, metodologias, línguas e soft-skills;\nInfinite Feedback | acompanhamento e progressão de carreira;\nHealth | Seguro de saúde, dentário e seguro de vida;\nPartnerships | benefícios e descontos em restaurantes, ginásios, viagens, farmácias e muito mais;\nOne to one | valorizamos a comunicação aberta entre todos;\nCelebrations | celebramos juntos perto ou longe e com prendas especiais;\nReferral Program | programa de referência de colegas e amigos;\nStack | portátil, pacote de dados e kit de boas-vindas;\nDiversity | Na Bee Engineering valorizamos a diversidade, defendemos a equidade e empenhamo-nos em criar um ambiente seguro, baseado no espírito de equipa e entreajuda. Estamos comprometidos em desenvolver práticas promotoras da igualdade de oportunidades e em combater a discriminação;\nSustainability & CSR | Enquanto empresa, temos um plano estratégico de ações definido, assente nos objetivos de desenvolvimento sustentável (Agenda 2030, ONU), com o objetivo de nos movermos de forma responsável e contribuirmos para um mundo mais sustentável e justo.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Data Analyst / Power BI\nData Analyst / Power BI",
+              "link": "https://www.linkedin.com/jobs/view/4092104731/?eBP=CwEAAAGUTGmBSpVgQ11qvNy5xXxiwHYN-_zM3O4BLNwXx3weJz6Nj-QyUrXZCqcVWz-sDthGyLBr4Ov7I6sLk24RVoMcQiStRxDtJYjpuRfpSAwq1_XPlJJaTxBOCVkXfA4T4JZHfX-mATWRILAHNaaipvn--wXrezeDtwUWUwJARNKIh7vw9mvMv8hpj8diBjck4oDy1N8EqW-dVKWOH2dWtBr0XK-jW9UXrgXJ5p7CXtIhR6Db__pms8rnNz_Rzn4zXqCiCF8m8w7lZCyQcd-9o1KtnIOeTVtymyhViWbZFfsgB_ZU81RsXKpirmlEo4HWHDZjgoLPwXtLbUnwuLwP85EdG31h5oYRl5c7o2R9ZW4l8EghEWh7TmGox4lEH9U8w1Rh-NUtl2RZLgErKj10ZObOc8fOVZlxMZUKHISyi4q7lryBFg-k8mYdTBsLhrmQtuiT1dXSBwdb_WkCM-VILlr4pK7BcFhbjihHk8eSC2KgZVClJxja5jr10A&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=roO8S%2BfYrosE3xWm2nFjeg%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nWe are searching for a Data Analyst / Power BI to strengthen our Microsoft-Team! To join them in working on new upcoming projects.\n\nLACO is a Belgian-based business intelligence and data analytics company that exist for more than 35 years now. We are a Microsoft Data & AI Solutions Partner with extensive expertise in various areas, including Microsoft BI and Data Governance. With over 120 consultants, we are dedicated to helping businesses succeed with data. We blend dedication with a dash of fun in everything we do.\n\nAt LACO, we value long-term relationships with both our clients and colleagues. We have recently secured several large projects with key clients, and to support these, we are looking to strengthen our Microsoft team to deliver end-to-end projects alongside the LACO team.\n\nYOUR JOB\nAs a Data Analyst/Power BI Expert at LACO, you’ll be responsible for:\nUnderstanding and mapping out the requirements of the business.\nCollecting, cleaning and pre-processing data from various sources.\nWorking closely with cross-functional teams and leveraging your expertise in Power BI to create compelling visualizations and reports.\nDesigning, optimizing, and developing Power BI reports and dashboards to meet business needs and requirements.\nWorking closely with stakeholders to gather and understand data requirements, ensuring data accuracy and consistency.\nTroubleshooting and resolving issues with Power BI reports, transforming complex data sets into meaningful insights through the creation of data visualizations.\nStaying up to date with the latest Power BI Microsoft Fabric features and best practices to excel in this role.\n\nYOUR SKILLS\nYou have a Bachelor’s and/or Master’s degree in computer science or equivalent.\nYou have an analytical mindset.\nYou have at least 3 years proven experience as a Power BI Developer or a similar role.\nYou know all about the programming languages SQL, DAX and Python.\nYou can model data using Kimball, Dimensional Modelling and Data Vault.\nYou are proficient in Power BI, including DAX, data modelling and custom visuals.\n\nYou get even more bonus points if …\nYou have a good knowledge of Azure Synapse, Data Factory, and Databricks.\nYou are familiar with diverse types of data storage for structured data.\nYou are a strong communicator with teamwork abilities.\nYou are fluent in Dutch and/or French and English.\n\nOUR OFFER\nWe’re open to work with Employees and Freelancers\nReceive an attractive salary package, along with excellent benefits.\nTraining opportunities to enhance your knowledge and advance your career in your chosen field.\nBe involved in innovative Microsoft tracks that challenge and inspire you.\nA great company culture with room for fun events such as: family day, yearly ski trip, sports events, game nights, …\n\nDon’t let this opportunity slip through your data fingers! Get in touch with our Talent Acquisition team and embark on your adventure to success.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Test Analyst\nTest Analyst",
+              "link": "https://www.linkedin.com/jobs/view/4114839182/?eBP=CwEAAAGUTGmBSs4cAHINDLGmQIKIYgW9025g4km_fex6jihLpago72QKs-g-DEsBoDLuVIaKGp1sj85iC92mAnE-Ax8FsZ_CAmJxpJFVMaH385GUmT1NO37iPkTC8Ph0Hp4F_4ZzVyBkm7WhTPAb2e57XHK7M9Aq9uuOG_xYS6YMw-wvCoSPwramJo9Jw4V23wgMqlm4T-damwLeSjBO9NxLgYi7jz8AGYVtAHvc-yeA2h29cvYw0JKMuoU5pbGJ5F0-zx46Vvpxx__Dd9JIlPhwEoSxA0q2_EzQ1xVtuPIlPlNWn58SbZ5do61HYNt00kyX314K-HALnmI9fGYOh-dDVEYN1xFcfcbQSVBJN0s0d3oZkqlPrNUoixMK_wb3RPy0Zz9X8xEgCDGb4SlDgZLOUjLWkyW9qL7XmPocU_5SpkavlVSuzT25TojhZuk_KKWQUCUyZ6qEryRwy6Wvy_9-kgq4TQzC-WMxqy4r2Y__m_4mLICpU5I7hqdLpW60nNc&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=UuejQ9uNLPLdRijTB3C4xg%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nMEDIOR TESZTELŐT KERESÜNK!\n\nHa fontos Neked az inspiráló közösség,\nakkor jelentkezz hozzánk és csatlakozz csapatunkhoz!\n\nAz ORIANA egy dinamikusan növekvő, innovatív magyar cégcsoport.\nFejlesztési módszertanunk az üzleti folyamatok digitalizációjára optimalizált, modern eszközök és technológiák alkalmazásával.\n\nManuális tesztelő feladatok\nTesztelői csapat mentorálása\nA vállalat saját fejlesztésű webalkalmazásának tesztelése manuálisan\nTesztesetek készítése\nTesztelési eredmények dokumentálása\nFeltárt hibák jelentése, követése, újra tesztelése\nEgyüttműködés a fejlesztőkkel\n\nElvárások\nSzakirányú végzettség\nLegalább 3 éves tesztelői tapasztalat\nTesztesetek írásában szerzett tapasztalat\nTapasztalat hibakezelő és teszt menedzsment rendszer használatában\nKreatív problémamegoldó képesség\nRendszerszemlélet\nSzakmai igényesség\nElhivatottság\n\nElőnyök\nISTQB képesítés\nCodecool, vagy Masterfield képzés\nAzure DevOps ismerete\nScript nyelv ismerete\nBusiness Analyst tapasztalat\nSzoftverfejlesztési tapasztalat\nKorábbi részvétel agilis projektekben\n\n\nAmit kínálunk\nKidolgozott tesztmódszertan és munkafolyamatok\nFejlődési lehetőség:\nTesztmódszertani ismeretek\nTesztautomatizálás\nPerformancia tesztelés\nIrodai juttatások (kávé, tea, szörp, heti 2 gyümölcsnap, csocsó, darts, zuhanyzó, biciklitároló)\nFiatalos csapat és modern iroda\n\nJelentkezés módja\nKüldd el önéletrajzodat a fizetési igény megjelölésével a hr@orianasoftware.com – ra!",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Technical fraud analyst\nTechnical fraud analyst with verification",
+              "link": "https://www.linkedin.com/jobs/view/4115272097/?eBP=CwEAAAGUTGmBSu5m07Y6V_zsX_rR2dS04jGTCCaCdY7ezJPknZGbqkm5r71C_sT-79fA130uOOQHaOu7_mOGZKAyppKfzFKLIb8m4LUPkEPDTtf5UF_bDcUArKRLrNNojHk2FOzUhONi9bnmEIXM-D4qLSL2-76VFmOwwEqk2ca0q7M6TVXMyYEHdrvKSujSEdMYJAgtkgXG2QPBt_v8vKPFksUjy3UGO0Yuwob73pG5BMjb42ePRcbSQA2i7M3qfDykE7imJ4IvhL8C0mU8eHCqAOzL7DZGAnKWItk9_0cb4Xa15ZOyTY8vZdiL95rHFLbBQdlyWHBcprP4hB3LD0EPInVscj28DsAZBgix1KNDn9KG7rTZWAuIstCmwg5kTeheFWrHa1SFdRSW-ntUvKxNRroNOaZraLm9zsVIZd__BwO5VAzm5gm5gb-fEPtQpmtuKgUILWINOhlLRd5wZ6OumDhoiyLvRnoJTeUbmoHa6q_0a4K8jKgqFO_RFg&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=ttrI8oRXDN88x1VkmqUc4A%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nA job in one glance\n\nDo you want to fully understand a job and organization before committing, or would you rather let curiosity drive you to discover more through direct contact? We believe in the latter and proudly introduce concise job listings.\n\nWe are seeking a Fraud Analyst for DataExpert to join the DetACT team. If you're passionate about cybersecurity and keen on making our digital and financial world safer, this role could be a perfect fit.\n\nYour Needs:\n- A knowledge-driven team with experienced colleagues.\n- Hybrid work opportunities.\n- Working with international clients.\n\nWhat You'll Receive (based on skills and experience):\n- Salary ranging from €3000 to €4000 gross per month.\n- Excellent secondary benefits.\n- Access to various training and educational opportunities.\n\nAbout the Team:\n- An ambitious player in cybersecurity, phishing, and bank fraud.\n- A small and close-knit team with an informal working atmosphere.\n- In Delft, DataExpert offers a challenging workplace within a reputable organization.\n\nWe understand this listing is brief and may not answer all your questions. Feel free to apply, and I will reach out to you as soon as possible.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Business Analyst / Product Owner, Gestión documental (100% remoto desde España)\nBusiness Analyst / Product Owner, Gestión documental (100% remoto desde España)",
+              "link": "https://www.linkedin.com/jobs/view/4117951029/?eBP=CwEAAAGUTGmBSu0VVOL1DnLyAMbSPhgzHsD69d7JWfQ31kDCbAWZQRP6CCFZzzViBCWcMzyE1MyzuOGA6MF3HzX03SUHhoU9XaJKu4oYtCu-SqtVyI5tT1BPpWAupG77Y34etT_g_kjcky6StvXId4Vw0vDON8Ilu4b6MD2U8oPkjNCXFvMoYAGvOO0RbrDhwmG0aS9TbEdz58ESDmH6vncfWbaAY-Xx6Sd5F7Jd8CMg2WlY-U3bkFrXUvxRuNPpYreF7rdkBoFV8kkrxHe3pI24zK4_WRfOjs3YqqvEBgMWENSlY3lf4E8_1f8Q_hUCpFQcAPG4itjlGmO4_lfPArVtVxbv5lkKlKHtzZgqbdWuBJ1AAlFrj9EUnTpUIwtbfo3sx9-n8h4Z9UiAMYhmCfnFfhRQt3uCHTKCTl2vAtorq96rTormt5wdNQXa7b0h2F-KNHf6TBLQqa8qRz43fpzeZFBAbs_EU5HAmdZHgUQDMtTUcG_MqpH07_KKoQ&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=yRA%2BpGRlQa%2FeeGaRB6of4A%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\n🚀 ¡Seguimos buscando talento…y nos encantaría que te unieras a nuestro equipo!\n\nPara que nos conozcas algo mejor, UST es una multinacional norteamericana certificada como Top Employer y Great Place to Work con más de 35.000 empleados a nivel global y con presencia en más de 35 países. Somos líderes en servicios de tecnología digital y proporcionamos soluciones tecnológicas de gran alcance a grandes compañías.\n\n🔎 ¿Qué buscamos?\nEstamos en búsqueda de un Business Analyst / Product Owner con experiencia en gestión documental, para dar servicio a uno de nuestros clientes líder en el sector bancario.\n\nColaboración 100% remota desde cualquier provincia de España.\n\n📋 Funciones:\nToma y planificación de requerimientos.\nDimensionamiento de equipos.\nSeguimiento de los desarrollos de los equipos.\nPreparación, seguimiento y validación del testing.\nPaquetización de requerimientos para subidas a entornos Pre / Pro\nGestión de incidencias.\nReporting interno y seguimiento de KPIs.\n\n💡 Qué esperamos de ti:\nAportar al menos 5 años de experiencia, y a ser posible con experiencia en gestión documental.\nBackground técnico, con experiencia en el mundo de desarrollo, idealmente conocimiento de APIs (ser capaz de leer y entender logs y revisar código)\nConocimiento de uno o varios productos / procesos bancarios (cuentas, pagos, tarjetas, contabilidad, préstamos, depósitos, Contact center, wealth, onboarding…)\nUso de Jira, Confluence y Postman.\nExperiencia en proyectos bajo metodología Agile (Skrum, Kanban, etc..)\nTener experiencia trabajando con áreas cross de la compañía (Legal, Compliance, Producto…) para trasladar sus necesidades/especificaciones a requerimientos funcionales del producto.\nExperiencia en comunicación efectiva con stakeholders digitales.\nExperiencia técnica en colaboración con desarrolladores y APIs, entendimiento de arquitectura cloud y modelado de datos: se valora la experiencia en trabajar estrechamente con equipos de desarrollo, comprendiendo los requisitos técnicos del proyecto y colaborando en la integración de APIs y sistemas para garantizar la funcionalidad y la interoperabilidad del producto digital en el contexto de préstamos, así como la capacidad para comprender y contribuir al diseño de arquitecturas cloud y al modelado de datos para optimizar el rendimiento y la escalabilidad del producto.\nDeseable: Inglés nivel B2\n\n💰 ¿Qué te ofrecemos?\n\n✈️ 23 días laborables de vacaciones y el 24 y 31 de diciembre.\n❤️ Numerosos beneficios sociales (seguro médico, ayuda al teletrabajo, seguro de vida y seguro de accidentes).\n🍴 Programa de Retribución Flexible (tarjeta comida, cheques guardería, tarjeta transporte, clases de inglés online, seguro médico para tu familia…).\n🎓 Acceso gratuito a varias plataformas de formación.\n🚀 Estabilidad y carrera profesional.\n🚶 Tenemos implantado un plan de compensación de referencias internas.\n🔗 Posibilidad de elección de percibir tu salario en 12 o 14 pagas.\n🏡 Medidas de conciliación (horario flexible, teletrabajo, asesoramiento de especialistas (psicólogo, nutricionista, entrenador personal), jornada intensiva los viernes y en verano según proyecto).\n🎁 Plataforma UST Club descuentos y descuentos en gimnasios.\n\n📧 Si quieres conocer más, no dudes en inscribirte y nos pondremos en contacto contigo para ampliarte información de la posición ¡Te estamos esperando!\n\nEn UST nos comprometemos con la igualdad de oportunidades en nuestros procesos de selección y no realizamos ningún tipo de discriminación por razón de raza, género, discapacidad, edad, religión, orientación sexual o nacionalidad. Estamos comprometidos con la discapacidad y apostamos por la incorporación de personas con certificado de discapacidad.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Data Analyst\nData Analyst",
+              "link": "https://www.linkedin.com/jobs/view/4117406316/?eBP=CwEAAAGUTGmBSqre6xWmx8H1v2jcwDfSYlVzvkijPAIgpWIA8TTGoZ0gcJGCrvtwwXalJfnJflHY1fXJH5poFy1_8YM8j4_nwdSZ4zIY_NsfU3tgMA-FQhlspsE9qio85OWBjCx2tzpPhf6IjrujDtFhmAvhqAPCRtYV3hzdNYA_6z_oklJg_-WysnAaFDlJ-_884mqV5LgkL6P6jvMO4STq3fJkOoElpM4dTr8OCZ33C1o6_8gSCuRNP-Fm8B6Nq2wcVXV9dtQcGYPJB5r7FdeoHWaiw08mgffmX0BxR_beIquGl6200g8p3L2WovEZkuCfwuhZxA4dCaRCDD8mnyRpofPx5RcGRcfcPa2Wtvg2y-VDsYU0GQOcUCztYGrkKRaum2Rxjj5K6n5AKsMp5yHPsntz9X8tCN1CTvdYQVDWxwncrQbtH8u-9f0gPaSqkynjo4ExEIh8G1QqC8oVWGT-QRb6J3HWwdfwD4TNNrObG2rxXg_Fi1lJ-UOqLya5t8o&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=Rq4lPnKipqIIDJw5xuhsVg%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nJob Title: Data Analyst \nLocation: Ghent, Belgium\n\nOverview:\nAs a Data Analyst, you support the energy transition by optimizing the design, implementation, and integration of technological solutions for proactive investment in distribution networks. You collaborate internally and externally to align policy, budgets, and opportunities, focusing on spatial and asset information within the GIS system.\n\nKey Responsibilities:\nAlign GIS data with municipal and utility projects.\nEnsure efficient data management to support policy and investment decisions.\nAnalyze and translate business needs into functional requirements.\nIdentify and implement best practices for data optimization.\nSupport the Asset Planning team with data-driven insights and recommendations.\nLead or contribute to projects with information or process impacts.\nAct as a liaison between stakeholders and maintain organizational coherence.\nMonitor and improve documentation, training, and communication processes.\nSkills & Expertise:\n\nDemonstrable experience with GIS systems.\nExperience with Databricks.\nProficiency in Power BI for data visualization and analysis.\nProgramming skills in Python.\nAnalytical, organizational, and project management capabilities.\nKnowledge of Asset Management and utility networks.\nStrong communication and collaboration skills.\nLanguage Requirements:\nProficiency in Dutch at a B2-level is required.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Junior Power BI Developer\nJunior Power BI Developer",
+              "link": "https://www.linkedin.com/jobs/view/4116508533/?eBP=CwEAAAGUTGmBSmId9CanKea7FGs5RsuA8z6MKLblP_aAOmzXciaKVhWakjM986x-uYT27vGAM6zKFFXnEpPM_5mqIzNdcAgfuZ3Ea-LegvFYShtlEh0t8aU9YWAfjYDPYFE3TfCSbL1tnD4wbrm2H9JbQx2AOkuckX5DwTFlFxFb7J04PwlIdNOKJ7wdVMsRZLhUgjsi0wsBfezF_dwFmt09bNHkoCF_saB6ze4NgzxIWGJywg1lCwQIEw--GUD0kNRgBKy90-x293HazPfWh1wXZgBH_zVK0FxZfM7e6XbDUJdXSl2ainpez1m4d085NnHw6I7fLm2ykKRTCB_KO7dzjZ3yPCH6VUhRbpO5kOUi0eqTdJHik3J13GRqhG7KQM1gk9SFisZx1SL_upyhJmFbtY-uEXNyZQYTiA7GFH7976qzd_LQ2hHRO3_KL6bkH05m0ckz8Jb-21wvked03z3SQBwxDBzpReA7qfGGyUBmGGDGj6BmEgS1W9LLuA03&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=n6%2FoiHRXItN5vsJ0sazfqA%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nESPRIMO Srl, società di consulenza informatica che opera dal 2002 su tutto il territorio nazionale ed internazionale, a supporto delle imprese, si colloca nel settore dell’Information Technology proponendosi come obiettivo quello di fornire una vasta gamma di prodotti, servizi e soluzioni nelle aree più strategiche per l’impresa, come: Infrastrutture IT, Content Management, ERP, Business Intelligence, CRM, Web Applications, è alla ricerca di n° 1:\n\n\nJunior Power BI Developer\n\n\nRequisiti richiesti:\nEsperienza di almeno 1/2 anni nel ruolo\nBuona conoscenza funzionale di Microsoft Power BI;\nBuona padronanza della lingua inglese;\nConoscenza della copertura dei processi aziendali da parte di alcuni dei principali ERP (Microsoft, SAP, Oracle vendor);\nBuona conoscenza della metodologia di data testing/squaring.\n\n\nSede operativa: Remoto, con eventuale presenza sporadica (su specifiche necessità progettuali) su Roma.\n\n\nSi offre un inserimento in un contesto stimolante e innovativo, con grandi prospettive di crescita professionale e una retribuzione commisurata all'esperienza.\n\nSi richiede l’invio di Curricula rispondenti al profilo della posizione aperta, verranno presi in considerazione solo quelli effettivamente in possesso dei requisiti sopraindicati.\n\nLa ricerca è rivolta ad entrambi i sessi (L.903/77). Inviare dettagliato curriculum vitae, con l’autorizzazione al trattamento dei dati personali secondo la Legge 196/2003.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Business Analyst / Product Owner Plataformas Globales SME (100% remoto desde España)\nBusiness Analyst / Product Owner Plataformas Globales SME (100% remoto desde España)",
+              "link": "https://www.linkedin.com/jobs/view/4117950038/?eBP=CwEAAAGUTGmBSuChxjFlY3EP2PZLWrVEZjOXJrh29ldV1AKfY04mat7vNatmIPJLh2NzUMk5MSSn4LT2sWojPE1RkJ9Wv4WCDG3FuIB4i_DkYBUjwFBLHvexN8eW3xS99fEkHJfOfWFwxzbzTGVfcVO0G7HFkvSJXmoLob3IGpODVuLOG5pyrnhbaQfvXgaIJpI28GnWhO9MiTaWQPgKPWDiH3kGM9sDHeWa6WpeBj6aTcpZQPTJIX6z6gNgx_Es53htjS_JOu-De9PN6TaahK39cvx2MdKjZbki0oZi7oVRX4oaO7CHdi8IFJYI0YgfV5UFE67u7BjoLACoi9Nlha_9AtS0c1YaACRCIUpuCZ78-JNssSNkoIlOmPv2SOke4UZ_pwhR7Pjk6a8jV8h-t-X9mLYFG_CbjJLb-rNVu5ht_MH3n1_mM9lYc8EaZtKC3_jxPA0o6QWpnub0l08D29sWU4T7mCftNdsMcyUzvCbEByes1HpIXglLuHdz7-gb&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=DeD8JdvsHe6vmctQWxN0TQ%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\n🚀 ¡Seguimos buscando talento…y nos encantaría que te unieras a nuestro equipo!\n\nPara que nos conozcas algo mejor, UST es una multinacional norteamericana certificada como Top Employer y Great Place to Work con más de 35.000 empleados a nivel global y con presencia en más de 35 países. Somos líderes en servicios de tecnología digital y proporcionamos soluciones tecnológicas de gran alcance a grandes compañías.\n\n🔎 ¿Qué buscamos?\nPara nuestro equipo estamos buscando 2 Product Owner / Business Analyst con experiencia en Plataformas Globales SME para colaborar en diversos proyectos de nuestro cliente del sector bancario.\n\nColaboración 100% en remoto desde cualquier provincia de España.\n\n⚙ Funciones:\nToma de requerimientos.\nPlanificación de requerimientos.\nDimensionamiento de equipos.\nSeguimiento de los desarrollos de los equipos.\nPreparación, seguimiento y validación del testing.\nPaquetización de requerimientos para subidas a entornos Pre / Pro.\nGestión de incidencias Reporting interno y seguimiento de KPIs.\n\n💡 Requisitos mínimos:\n\nAportar más de 5 años de experiencia como Business Analyst y/o Product Owner que aporten: conocimiento de los procesos Agile Scrum y sus ceremonies (planning, retrospective, dailys & reviews).\nConocimiento para trabajar/liderar equipos Agile Scrum.\nExperiencia como PO de equipos de desarrollo Web/Web responsive y/o Mobile.\nExperiencia escrita de User Stories con enfoque en cliente final (si solo tiene experiencia con herramientas para usuarios internos es menos interesante, pero no es factor de exclusión).\nConocimiento de productos bancarios de Empresas.\nExperiencia con Jira, Confluence y Postman.\nBuenas habilidades comunicativas para trabajar en equipo de forma colaborativa.\nInglés y Español: B2/C1\n\n💰 ¿Qué te ofrecemos?\n\n-✈️ 23 días laborables de vacaciones y el 24 y 31 de diciembre.\n-❤️ Numerosos beneficios sociales (seguro médico, ayuda al teletrabajo, seguro de vida y seguro de accidentes).\n-🍴 Programa de Retribución Flexible (tarjeta comida, cheques guardería, tarjeta transporte, clases de inglés online, seguro médico para tu familia…).\n-🎓 Acceso gratuito a varias plataformas de formación.\n-🚀 Estabilidad y carrera profesional.\n-🚶 Tenemos implantado un plan de compensación de referencias internas.\n-🔗 Posibilidad de elección de percibir tu salario en 12 o 14 pagas.\n-🏡 Medidas de conciliación (horario flexible, teletrabajo, asesoramiento de especialistas (psicólogo, nutricionista, entrenador personal), jornada intensiva los viernes y en verano según proyecto).\n-🎁 Plataforma UST Club descuentos y descuentos en gimnasios.\n\n📧 Si quieres conocer más, no dudes en inscribirte y nos pondremos en contacto contigo para ampliarte información de la posición ¡Te estamos esperando!\n\nEn UST nos comprometemos con la igualdad de oportunidades en nuestros procesos de selección y no realizamos ningún tipo de discriminación por razón de raza, género, discapacidad, edad, religión, orientación sexual o nacionalidad. Estamos comprometidos con la discapacidad y apostamos por la incorporación de personas con certificado de discapacidad.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "IT Business Analyst\nIT Business Analyst with verification",
+              "link": "https://www.linkedin.com/jobs/view/4114823867/?eBP=CwEAAAGUTGmBSjIca0oi8LQom2WV3-hCa7DMNRGlPnF5DG6PzeGKXbfF0Xfe2CBEttLrYP-gh1FUAtG-U8S-kGb30hcst-G0RIopCqcePTTZk3pIEemOPJXkzNhs86MTdLk3XRJRSsKFVm3OiNwYpwzLVbriPtYW9xwV-FoSQu3HPJx57RV1ZQ6Ts_p8z7qC7x-9Ijeqs2olrhtrBYmx09w1ekTQiOa_8ttGjHIWaYmUW7lzHEr6Hzsbz_Uz9gLppC6tP_UAQJE_O48OM3dcKpZzS1iE1rQVd4NppO40moL2bs43aQqiPDWUwhxjgNMxdsfaYy3FdhbL5s3O6snuaxBWtvArDcol2eEUJLxf8wFjuWguT95d9bnYI9qJNAfzQVhHp9sSZvRLkJYHVNwb_iWhi0teUFiz3iI2CYf7Px5wrizUF7eh9Fq1-9pqV84Zrt15KZufQUjPDSNCDWlIqyPgI67q1zB7_vWdlSUju4iz6QRufIRqAFdAr6E&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=x5gh1rn65Guhn4PAEKmUnw%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nDans les années à venir, plusieurs défis attendent ORES : accompagnement de la transition du marché énergétique et ses implications, compteurs intelligents, augmentation du flux des échanges de données, gestion de partages d’énergie, etc.\n\nAu sein du département Informatique, ORES est actuellement à la recherche d’un IT Business Analyste fonctionnel.\n\nLe Business Analyste fonctionnel garantit l’analyse et la documentation des solutions basées sur les spécifications métiers, ainsi que le testing de ces solutions et le support aux utilisateurs clés.\n\nMission:\n\nResponsable de l’analyse et de la documentation\n• Rédiger les Spécifications Métiers sur base des besoins exprimés et des processus TO-BE fournis par les Parties prenantes Métiers et traduire les Spécifications Métiers en SFDs (Spécifications Fonctionnelles Détaillées).\n• Assurer une cohérence entre les besoins et la solution imaginée.\n• Rédiger systématiquement, la documentation fonctionnelle des solutions.\n\n\nResponsable de la collaboration avec les autres parties prenantes\n• Collaborer avec les Parties prenantes Métiers et les architectes de solution afin de s’assurer que le document SFD couvre l’ensemble de la demande formulée dans les Spécifications Métiers et le cadrage de la solution ;\n• Collaborer avec les analystes business et fonctionnels des autres équipes pour lesquelles une dépendance a été identifiée ;\n• Collaborer avec les équipes de développement :\no S’assurer de leur bonne compréhension des besoins.\no Valider la traduction des spécifications fonctionnelles en implémentation technique.\no Collaborer à l’estimation de la charge de développement nécessaire.\no Suivre continuellement les développements\n\n\nResponsable de l’exécution des activités de test\n• Préparer et exécuter les tests d’intégration et les tests fonctionnels.\n• Suivre les résultats des tests d'acceptance\n• Analyser et poser un diagnostic sur les incidents et problèmes issus des tests dont il a la charge et y apporter les corrections nécessaires.\n\n\nCompétences :\nVous disposez d’un Master à orientation informatique, ou équivalent par expérience.\nVous avez une expérience d’au minimum 2 ans en tant qu’analyste business ou fonctionnel.\nVous avez de bonnes capacités d’analyse, de gestion des besoins et de chiffrage de solutions.\nDans le cadre de projets, vous pourriez être amené à coordonner une équipe d'analystes fonctionnels IT.\nVous avez des compétences liées aux tests d’intégration et fonctionnels, à la fois en terme de rédaction et d’exécution de cas de tests.\nVous avez une expérience dans l’utilisation d’un outil de testing (HPQC, Azure devOps ou équivalent).\nVous avez une expérience dans l’utilisation d’un outil de gestion de backlog (Azure DevOps, Jira ou équivalent).\nVous disposez de connaissances globales en matière de base de données relationnelle et du langage SQL.\nVous avez une connaissance de l’environnement Microsoft Azure et de ses composants (Application Insights, Service Bus, Storage accounts, DB SQL, Data factories).\nVous êtes capable de formaliser une analyse fonctionnelle dans les différents diagrammes UML.\nVous pouvez interpréter et comprendre un diagramme BPMN.\nVous avez une expérience en méthodologie basée sur une approche Agile (SCRUM ou autre).\nVous avez une expérience avec un outil de modélisation (Sparx EA ou équivalent) .\nVous êtes autonome, orienté objectifs et avez l'esprit d'initiative.\nVotre bonne communication est un de vos atouts.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Technical Business Analyst\nTechnical Business Analyst",
+              "link": "https://www.linkedin.com/jobs/view/4115836378/?eBP=CwEAAAGUTGmBSm7FHv_2usljq6UdeL-YaWybRIqqkE2pWTel1DefpoWHpIzS63JKID8MDe-motioPtWr8-sIp1hvLYfbnj_hcT0JgyDUgDZI3g9Wb0RDhY7J-xL2FLjivZqr7HmdcypWpre5s13WqtgTTVP4FrdrgMms8bI80U1nNNj3rD8rLdjfIL6gQ2YdU3Ip4TYk3gdjPZjIGbWHr6EfJQPujqxQ2ulWISFLVoiA7NA9yvbuo2u4WIvs0Z28YbKqL1dUHsgHoOO1hjlyIdGTztBJGGPJ8XiSi-GJEFHdl0dhqBaDPKFby4OrBJ3baHJ3Lq7zTLwrqrVXwWel-TNkpPU5D9nx71NS-Fi-Ix622xv4uoBU3eZJ07KqwPRG-4-PsSxyQXvXg2jjdlQ0id9_gDn6PdbUZ97wVM8M7ZRKI6-JWIlg3vW115FiCsXNhr7uhQSdBKF1FlR58KUrIZYeJIxSr_7tiapsvNCFc7QfMmtGmZgzX9s3ohdF5Is-7Nk&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=4pQw0ZE3A5ufw2pFPK7%2BTQ%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nIT Business Analyst - 3-4 years experience required\n\nMy Dublin based client is a large corporate firm and they are looking for an IT Business Analyst. The ideal candidate will be an excellent communicator and is eager to join a firm with great career progression. WFH options are in place along with a hybrid work model. They are very flexible and the role is 2/3 days on site and 2/3 days from home.\n\nJob Responsibilities\nYou will play an important role in workshops and gain and sustain trust of key business and technology stakeholders\nStrong stakeholder Management skills\nWork alongside a dynamic team of developers and have good industry implementation background.\nStrong written and verbal communication across all levels\nMust have good Agile/ Scrum skills and experience\nExperience of IS systems, processes and change is highly desirable\nCreative and critical thinker\n\nExperienced Required\n3-4 years experience as a Business Analyst\nStrong presentation skills are essential\nAbility to manage and engage at all levels of stakeholder management\nPrevious consultancy experience\nWorks closely with Lead solution architects to ensure that the solution proposed meets the requirements and the anticipated benefits, including compliance to statutory and company policies and procedures.\nGet up and go attitude with a passion for learning and implementing new concepts.\nLeadership and collaborative interpersonal skills to engage and motivate team members.\n\nEducational Requirements\nThird level degree in relevant field\nAny certifications nice to have\n\nBenefits:\nPension\nHealthcare\nGym\nTraining and Development\nCareer progression\nOne of Ireland's leading Employers\n\n\nHOW TO APPLY:\nIf you are interested in this role, please apply for this role with your updated CV.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Data Engineer (AWS Specialist)\nData Engineer (AWS Specialist)",
+              "link": "https://www.linkedin.com/jobs/view/4114862964/?eBP=CwEAAAGUTGmBSvg1OhmYnhTC8DzR4TQNgzY4Jh1D5pkDlmxCmU5GWkVvCYN4AbJ2fXYdidzxACSszAWraeNRe4_Zdlz_K7lgRApdtIJOvxE5e616ONffAmlvuC7WPZiEuVS-qBbWpgT0wiC0BG674xEm2AkuGno486ouoQpB9pVYH19nIjpOtgdVCFm3UpSAfi8N70ISNCVlEiH9_RsxgrgpaLsGFuQAEjuqW0RCBfMv7Y1zVC4oOokOZmcJHOYorYY-gLsGYZ3WugOADN4g9DlSztkz-3WDhPfrLandZTBI2zKVeb56z0SyIivYBLy1PsmQ5-9K636OUF7JShWhB1lWmo-AyMv7_sQTMO_bl7SM0sBE2QsiZ75d6FxOGBmGPbD6dO6ywIVKirIR7ijCV8GR4y6MUIr-s7FmKQVAAEHqtMaRcVAzoFFB6FvaRGH9OQKwiv8GceSSXLLsVutbB-Liosf4m-MxCxfrRAmUQZRR-KStvYdOjbZifD0IKe_ul1BrY8Il8-7mAFI_vAI0HpyR_10eKw&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=itNTaaa%2FgQbw7SIFeEHrsA%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nHighlights \nPosition: Data Integration Engineer (AWS Specialist)\nLocation: Builtrix Office - Lisbon & Hybrid\nExperience Level: Minimum 3 years of professional experience.\nEvaluation method: 3 stages of interview including 1 technical, 1 challenge assignment, and 1 team culture interview. We expect this process to take between 2 to 3 weeks from the first interview to communication of the results.\nSalary level: The salary level depends on the experience and skillset.\nStart date: As soon as possible.\n\nAbout Builtrix\nAt Builtrix, we are transforming the way utility data is collected, understood, and utilized. Our mission is to empower energy experts, ESG consultants, and facility managers with meaningful and standardized energy insights. Our culture is to build our small team of amazing people who can demonstrate outstanding performances while learning and growing their skills exponentially every year. Join us in shaping a greener and cleaner future through cutting-edge technology and innovation.\n\nRole Overview\nWe are looking for a passionate and skilled Data Engineer to join our product team. As Builtrix is growing its customer base in Portugal and Europe, this role is important in ensuring seamless integration of data from multiple sources, processing it efficiently, and enabling meaningful insights.\nYour day to day activities look like:\nmeetings with the product team and contributing in planning the next sprints.\nconsidering the data integration requirements based on the API / Server / Data lake / Database requirements and documentations\ndeveloping new features on the ETL process and data pipeline\ntesting the ETL performance and reporting the key metrics to product leader for the next upgrades\nmonitoring the data pipeline behavior and building automated reports on missing data and blocked connectors\nreviewing the process costs and exploring cost reduction opportunities\nSuccess in this position will be measured by:\nHow fast the data integration developments are made.\nHow efficiently the data pipeline including the connectors, processors, and storage system operate to:\nmake sure continuous high quality data ingestion and export\nreduce the cost of cloud infrastructure (e.g., AWS).\nIf you are someone who thrives on working with complex data ecosystems and is excited by the challenge of improving energy efficiency and sustainability, we want you on our team!\n\nKey Responsibilities\nCloud Integration:\nDesign and implement data integration pipelines from diverse sources, including cloud platforms, legacy building management systems (BMS/EMS), and IoT systems. The pipeline may include some unstructured processes such as scrapping and/or reading data from uploaded CSV/PDF files.\nEnsure robust and secure data exchange mechanisms at both data exchange and control/automation levels.\nETL Processes:\nBuild and maintain efficient ETL workflows to process, clean, and transform data for analytics and operational use.\nHandle both batch and real-time data processing requirements effectively.\nCloud Infrastructure Management:\nLeverage AWS services such as Transfer Family, API Gateway, Lambda, Athena, S3, EC2, RDS and others to develop scalable solutions.\nEnsure systems are optimized for performance, security, and cost-efficiency.\nData Analytics:\nCollaborate with the product team to support analytics and machine learning initiatives.\nEnable API-based data access for customers using RESTful API frameworks.\nData Security:\nEnsure best practices in data security and compliance with industry standards.\n\nRequirements\nExperience:\nA minimum of 3 years of professional experience in data engineering or a related field such as backend development.\nAt least 1 year of hands-on experience with AWS cloud services.\nTechnical Skills:\nProficiency in working with cloud-based infrastructures, particularly AWS.\nStrong knowledge of data integration tools and protocols.\nStrong knowledge of databases.\nStrong knowledge of coding in Python.\nStrong knowledge of data and cloud infrastructure security.\nExperience in designing ETL pipelines for batch and real-time processing.\nSoft Skills:\nPassion for data analytics and sustainability.\nStrong problem-solving skills and the ability to work in a collaborative environment.\nExcellent problem-solving and troubleshooting skills\nTeam working, Entrepreneurial spirit and can-do attitude\nFluent English language \nOther:\nComprehensive understanding of data security principles.\nExcellent written and verbal communication skills in English.\nFluency in reading and writing in Portuguese is a plus\nKnowledge in the field of energy is a plus.\nKnowledge in the field of ontologies and system interoperability is a plus.\n\nWhat We Offer\nA dynamic and innovative work environment.\nOpportunity to contribute to sustainable energy solutions.\nCompetitive compensation and benefits.\nFlexible hybrid working options.\nProfessional growth and learning opportunities.\nAnnual budget to spend on professional growth.\nParticipating in international technological events and exhibitions\nFor more information about us, visit www.builtrix.tech  or reach us at info@builtrix.tech\nNotice: we are not interested in outsourcing the hiring.",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Data Analyst / Data Engineer\nData Analyst / Data Engineer with verification",
+              "link": "https://www.linkedin.com/jobs/view/4079954621/?eBP=CwEAAAGUTGmBStFVJ1__oWdy-e7TkXZ_gIZWYlUVCkKTQQvf-wVK7LmAXjOQD62cfxRTDeSapFBti5IFIjhLYdd3uSgSQcAujkiX_ZM8-eMznmPGLdrcSWUoH9HG0fyfVIR7m31xEjfRoR4CIc8ZJX-jz-CqTnQfn7If-oG064GLBRo_5wJame01fLybglDmuRwwnh4aJCQscYCXbB6Mfu2AUde0WJOnRWaukfLF1qbdke9qqse0bxbppQaD8DgsxQQIPiCRmFkHmH2G9mjABzpKelaE8qE8n6Hem-NuuupKH2tl9iYXQBI9Un6aTuW3ouIaK01y2el1myuu2JHSR0OfV0uccvJhVnND0NR2SRI3Gw3SaJFhuVVRbI46-79rNCqo43q3ZbPvL7U_1D0pRxgQm_SdNaR5EdwGrbREpv_Y-DwEUHmPmXpumuvca8z65delzen8jyjijB9-BjnN-4Q4dLEwXameCdjXkOmnbP_d8cB6IJK3cjplkiNPvJ7m&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=pEq9yhqR49RyLPwsROiw2A%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nJoin our growing international team at Yieldigo, a leader in pricing optimization with a strong presence from Prague's CTU to Silicon Valley. Do you enjoy working with data and seeing it as more than just numbers? Then why not become our new Data Analyst / Data Engineer?\n\nWho are we?\n\nWe're Yieldigo, offering clients software that allows them to efficiently manage the pricing of goods in both physical stores and e-shops. We started as a startup, but have grown into a mature company utilized by retail chains in 11 countries worldwide. We are now heading into the next phase of our go-to-market strategy with a strategic partner who will sell our software in North America. This brings increased demands on the existing team as well as new reinforcements.\n\nAnd what about you? \n\n✅ Do you enjoy reading and analyzing data, and can you explain the findings in simple terms?\n✅ Are you comfortable talking to people and looking for solutions where others see only obstacles?\n✅ Do you want to do meaningful work where you can see the results first hand and where you are not merely a cog in a corporate machine?\n\nIf you ticked 3 times ✅, then read on!\n\nWhat will you do here? \n\nAs the master of data at Yieldigo, you will become a valuable asset to Alina's team, our Onboarding Director. You will be responsible for ensuring the quality of processed client data, identifying opportunities to automate processes, and contributing to the overall improvement of our integration processes. Working with data will enable you to uncover insights that might otherwise go unnoticed and to think strategically in terms of business objectives.\n\nHow do we picture you?\n\nThis is not a junior role; we’re looking for candidates with proven experience, independence and problem-solving skills.\nYou can interpret data findings and draw conclusions in simple terms that are clear to everyone, and to find business logic in data.\nYou enjoy communicating with people, explaining problems in a structured manner, and proposing solutions.\nYour knowledge of Python is at least at an advanced level.\nYou can use Pandas library to transform, clean and analyze data.\nWe will be over the moon if your SQL (PostgreSQL) skills go beyond the ordinary.\nEnglish proficiency at C1 level or higher.\n\nWhat's in it for you?\n\n🌎 A great international team that tackles problems like adults\n💻 Mac or PC\n💰 Salary proportional to seniority\n🌟 Employee Stock Ownership Plan (ESOP) for the exceptional workers\n🌴 5 weeks of holiday\n🥵 Sick days in case you feel under the weather\n☎️ Phone plan\n🏡 Flexibility and the option for hybrid work\n🏋️‍♀️ Multisport card\n🗣 English lessons\n📜 Conferences and training courses\n🎳 Team events\n🏢 Offices in the center of Prague",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            },
+            {
+              "title": "Business Analyst\nBusiness Analyst with verification",
+              "link": "https://www.linkedin.com/jobs/view/4115263739/?eBP=CwEAAAGUTGmBStLxenaIFzLCdGsY4HokTurkiL2H3Cymh65ls1nfU-bu3utyDhHisQ-p0tkiaGF-w1jgkWf3Uwhr1hGIp12LOFZvMYEx8cfJ28Y2j1uiw0UevrjqWCOfJUWZ5S2b1GJYv_6UAnphbWnY7LlETCO-yGirNxFOU93bIv83nmee2YxY8vvA1_WQCvwzdSdkiJA4yHuwsnm3G-ocOL061cARZp4yFC1tMXVqC5vjQjS2a0cbINKSM_BHSuZSdTltoJouOYTArpdIrqzDYT-YnvDpJeD2Yco1-7h3U-Tfz2ulFOGnGjJ4suygecANBd4Qggtf2EpQJzjFFolyLuxJanZfHDdhNZJLBUaLWhJfn8jHrqpGp8EmF60BxEKC8NXMWzlicG9wH58hNtC9QgJHD-uXnAAyKRlxnDeQydgDx7IF0CHpqSiBPs3PzXv6Irs0kQzwS7KVdMtBQaNZL8ZivtxxTvTy6G_r2rlsU0mCajwGCKwfaDK2DoQKvJ4&refId=qdyK4aRcxVaaZeYJLTtFzQ%3D%3D&trackingId=KtLhy6jTkKLU9bR%2FWZvRxg%3D%3D&trk=flagship3_search_srp_jobs",
+              "description": "About the job\nNexeo is currently looking for a Business Analyst for one of the leaders within the Energy industry in Belgium.\n\nNexeo Belgium is a consultancy company that supports its clients in the banking, finance and insurance sectors in all phases of their transformation projects: from business consulting to the implementation of IT solutions. \n\n\nAs a consultant you will have the opportunity to be part of Nexeo:\nInternational environment ( Offices in France, Belgium, Luxembourg, Switzerland & Canada)\n+ 450 employees\nover 20% growth each year\n\nAs Business Analyst, you will be responsible of the following tasks:\nIdentify and evaluate business requirements for the asset management of renewable energy systems, integrating them into the electrical grid and power markets, and facilitating renewable energy trading.\nWrite functional requirements documents for the specific asset management systems and the specific contract management and trading systems needed for renewable energy systems.\nWrite test cases that cover the same functional scope, ensuring correct implementation of the functional requirements as documented, and satisfaction of the corresponding business requirements.\nCreate functional documentation covering the delivered systems. It should cater to both users and support personnel, from low-level documentation to high-level documentation.\n\nProfile\nIn-depth knowledge of power markets, with expertise in renewable technologies and their specificities with regard to asset management and energy trading.\nPython and SQL skills with experience in software development, data science or related fields.\nFamiliarity with cloud tools (e.g., AWS) and relational databases.\nExperience in trading or operating assets in wholesale and/or ancillary service markets is a plus\n\nWorking for Nexeo\nA very attractive salary package\nInteresting carreer opportunities\nAmbitious goals are encouraged\nA lot of fun\n\nIf you’re motivated, flexible, open minded and ready to be a Nexeo Consultant this function of Business Analyst is made for you!\n\n@Business Analyst @Python @SQL @AWS @Energy @E2E @Freelance @Long Term @Brussels",
+              "company": "Stratis",
+              "location": "Budapest, Hungary (Hybrid)"
+            }
+          ],
+          "webhookUrl": "https://n8n.freddyflows.com/webhook/cdd169e2-050a-4e47-9bb4-a6207a257ac6",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-01-07T14:39:49.636Z",
-  "versionId": "944b4ce3-c668-4346-857d-a7c43676bf64"
+  "triggerCount": 1,
+  "updatedAt": "2025-01-10T02:05:09.000Z",
+  "versionId": "ac9c9b3b-d420-4cd7-8a8b-75a148733992"
 }
