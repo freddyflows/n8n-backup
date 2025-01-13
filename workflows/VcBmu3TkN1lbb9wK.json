@@ -1,0 +1,311 @@
+{
+  "active": false,
+  "connections": {
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Get Channel ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set channels": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for latest video": {
+      "main": [
+        [
+          {
+            "node": "Get info from video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Channel ID": {
+      "main": [
+        [
+          {
+            "node": "Search for latest video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set channels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-13T21:55:56.677Z",
+  "id": "VcBmu3TkN1lbb9wK",
+  "meta": null,
+  "name": "Repurpose Latest Videos to Text",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "channel_list",
+        "options": {}
+      },
+      "id": "3de7bb4a-6cda-4397-ac10-67f775ca856c",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        600,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1658c06e-88c5-4234-8346-1b6c90698721",
+              "name": "channel_list",
+              "value": "[\"https://www.youtube.com/@ColeMedin\", \"https://www.youtube.com/simonscrapes\"]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9bd3fc75-ca18-4ed1-903b-89529eace600",
+      "name": "Set channels",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        360,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Append to Airtable\nVideo transcript, summary, timestamps, likes, views, comments, tags\n\n",
+        "height": 282.6129943749578,
+        "width": 300,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        -180
+      ],
+      "id": "4a6bac20-2dc5-4c64-a644-eeef487a3696",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app6NYPYeFfSNbIq5",
+          "mode": "list",
+          "cachedResultName": "Automake.io Social Content",
+          "cachedResultUrl": "https://airtable.com/app6NYPYeFfSNbIq5"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblbAjoKe6ousVjtM",
+          "mode": "list",
+          "cachedResultName": "Ideas",
+          "cachedResultUrl": "https://airtable.com/app6NYPYeFfSNbIq5/tblbAjoKe6ousVjtM"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Platform": "Youtube",
+            "Channel Name": "={{ $('Get info from video').item.json.snippet.channelTitle }}",
+            "Channel_URL": "={{ $('Split Out').item.json.channel_list }}",
+            "Views": "={{ $('Get info from video').item.json.statistics.viewCount }}",
+            "Likes": "={{ $('Get info from video').item.json.statistics.likeCount }}",
+            "Comments": "={{ $('Get info from video').item.json.statistics.commentCount }}",
+            "Video_URL": "=https://www.youtube.com/watch?v={{ $('Get info from video').item.json.id }}",
+            "Video_description": "={{ $('Get info from video').item.json.snippet.description }}",
+            "Video_title": "={{ $('Get info from video').item.json.snippet.title }}",
+            "Video_tags": "={{ $('Get info from video').item.json.snippet.tags.map(item => \"#\" + item.replace(\" \", \"\")).join(\" \") }}",
+            "Video_summary": "={{ $('Video Transcript').item.json.Video_summary }}",
+            "Script_summary": "={{ $('Video Transcript').item.json.Script_summary }}",
+            "Transcript": "={{ $('Video Transcript').item.json.Transcript }}",
+            "Source": "Channel Monitoring"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "77e9b359-2bf8-4330-a992-5ba8b0606a9c",
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1880,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Search for latest videos\nSearches for latest videos and gets statistics\n\n",
+        "height": 260,
+        "width": 735.8302426260525,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -180
+      ],
+      "id": "bded4416-9c23-4a42-b0b2-99fa64940649",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Set channel list\nA json parameter that includes an array of objects consisting of the channel ID and channel name\n\n",
+        "height": 337.73623577731644,
+        "width": 455.8464870520928,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -180
+      ],
+      "id": "83e5a2d6-aac6-4b2c-8977-4a83c2107232",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "limit": 4,
+        "filters": {
+          "channelId": "={{ $json.items[0].id.channelId }}",
+          "publishedAfter": "={{ new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString() }}"
+        },
+        "options": {
+          "order": "date"
+        }
+      },
+      "id": "aecfaf63-d280-41c2-8575-ad985e77e7cb",
+      "name": "Search for latest video",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        -80
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "get",
+        "videoId": "={{ $json.id.videoId }}",
+        "options": {}
+      },
+      "id": "b9a6bd07-28a9-40af-9650-1d941e0a96f4",
+      "name": "Get info from video",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q={{$json.channel_list.replace('[https://www.youtube.com/\\](https://www.youtube.com/%5C%5C)', '')}}&maxResults=1",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "youTubeOAuth2Api",
+        "options": {}
+      },
+      "id": "c6e5ebd2-7768-4758-9be5-d6e514b98c1b",
+      "name": "Get Channel ID",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            },
+            {
+              "triggerAtHour": 16
+            }
+          ]
+        }
+      },
+      "id": "7341ee7d-92d8-4c4f-89b2-7d299ea3dd69",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        100,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## It's incomplete but watch this video\nhttps://youtu.be/wLwi0SRG0TU"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        740,
+        -500
+      ],
+      "typeVersion": 1,
+      "id": "348cd84b-e87d-4367-9cbb-aa9c6816c826",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-13T21:32:55.776Z",
+      "updatedAt": "2025-01-13T21:32:55.776Z",
+      "id": "NeW0zVSMZNNhpEww",
+      "name": "Content Gen"
+    },
+    {
+      "createdAt": "2025-01-13T21:19:29.377Z",
+      "updatedAt": "2025-01-13T21:19:29.377Z",
+      "id": "rT1XjZHKkEcoosBZ",
+      "name": "Cool Stuff"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-13T21:57:08.000Z",
+  "versionId": "9544ca04-6869-4e31-a8d6-032a68908d84"
+}
