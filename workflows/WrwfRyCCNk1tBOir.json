@@ -270,8 +270,8 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
-        1200,
-        1120
+        3960,
+        820
       ],
       "typeVersion": 1
     },
@@ -284,8 +284,8 @@
       "name": "Split Out",
       "type": "n8n-nodes-base.splitOut",
       "position": [
-        1420,
-        1120
+        4180,
+        820
       ],
       "typeVersion": 1
     },
@@ -408,8 +408,8 @@
       "name": "Create Task",
       "type": "n8n-nodes-base.airtable",
       "position": [
-        1640,
-        1120
+        4400,
+        820
       ],
       "typeVersion": 2.1,
       "credentials": {
@@ -498,21 +498,6 @@
     },
     {
       "parameters": {
-        "content": "### Replace API key for Fireflies\n",
-        "height": 80,
-        "color": 4
-      },
-      "id": "5eadd00a-9095-4bf3-80ed-e7bc5c49390d",
-      "name": "Sticky Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        1360,
-        340
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
         "content": "### Scenario 2 - Create Tasks tool",
         "height": 280,
         "width": 820
@@ -521,8 +506,8 @@
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1120,
-        1040
+        3760,
+        740
       ],
       "typeVersion": 1
     },
@@ -536,24 +521,8 @@
       "name": "Sticky Note3",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1120,
-        240
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "### ... or watch set up video [10 min]\n[![Youtube Link](https://cflobdhpqwnoisuctsoc.supabase.co/storage/v1/object/public/my_storage/Video%2011%20-%20Fireflies%20Agent%20Blur.png)](https://www.youtube.com/watch?v=0TyX7G00x3A)\n",
-        "height": 239.5888196628349,
-        "width": 330.5152611046425,
-        "color": 7
-      },
-      "id": "6d367721-875d-4d43-bd55-9801796a0e9f",
-      "name": "Sticky Note7",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        680,
-        760
+        3260,
+        20
       ],
       "typeVersion": 1
     },
@@ -653,7 +622,7 @@
       "typeVersion": 2,
       "position": [
         2720,
-        440
+        720
       ],
       "id": "e2061ff2-dd37-4be8-8663-f2b18c3c0f85",
       "name": "Google Slides",
@@ -682,8 +651,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        2320,
-        540
+        2400,
+        720
       ],
       "id": "f4d48c8e-0a1f-4e16-9a6f-febdd379cf5f",
       "name": "Google Drive",
@@ -876,12 +845,12 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1736715469
+        "lastTimeChecked": 1736738282
       }
     }
   },
   "tags": [],
   "triggerCount": 2,
-  "updatedAt": "2025-01-12T20:57:49.000Z",
-  "versionId": "fbebfebd-90dd-449d-adb3-7aebefdad553"
+  "updatedAt": "2025-01-13T03:18:02.000Z",
+  "versionId": "e517f4e2-a055-440d-a5c9-ed7eb3bf9d37"
 }
