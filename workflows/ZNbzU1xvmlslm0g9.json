@@ -169,7 +169,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Analyze the following job posting and determine if it is suitable for someone with workflow automation skills using Zapier, Make, Power Automate, and CRMs like HubSpot, ClickUp. Not robotic RPA jobs which are different:\n- Also: Posts in a different language than English or Spanish aren't suitable\n- Jobs located in third world countries such as South America, Africa, India shouldn't be considered either.\n\nTitle: {{$json[\"title\"]}}\nDescription: {{$json[\"description\"]}}\nCompany: {{$json[\"company\"]}}\nLocation: {{$json[\"location\"]}}\n\nReply with \"YES\" or \"NO\"."
+              "content": "=Analyze the following job posting and determine if it is suitable for someone with workflow automation skills using Zapier, Make, Power Automate, and CRMs like HubSpot, ClickUp. Not robotic RPA jobs which are different:\nIf job post is in a different language than English or Spanish then don't approve\n\nTitle: {{$json[\"title\"]}}\nDescription: {{$json[\"description\"]}}\nCompany: {{$json[\"company\"]}}\nLocation: {{$json[\"location\"]}}\n\nReply with \"YES\" or \"NO\"."
             }
           ]
         },
@@ -515,6 +515,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-10T02:05:09.000Z",
-  "versionId": "ac9c9b3b-d420-4cd7-8a8b-75a148733992"
+  "updatedAt": "2025-01-15T03:24:13.000Z",
+  "versionId": "a25ac858-75bc-41a4-8739-da433905e3fe"
 }
