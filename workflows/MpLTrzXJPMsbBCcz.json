@@ -27,6 +27,17 @@
       "main": [
         [
           {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
             "node": "Telegram",
             "type": "main",
             "index": 0
@@ -98,13 +109,13 @@
     {
       "parameters": {
         "chatId": "@upworkybotardo",
-        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}\n\n\nProposal: \n\n{{ $json.message.content }}\n",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        800,
+        1800,
         0
       ],
       "id": "42fee6ce-b896-422c-ba41-2042ae9757bc",
@@ -154,20 +165,131 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        580,
+        640,
         0
       ],
       "id": "6bbf5106-4efc-4e89-8ae5-30d5f7aff2ec",
       "name": "Filter"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Create a proposal for the upwork job posting following this structure: \nHi,\n- introduce yourself as workflow automation specialist-\n- include 1 or 2 similar projects you've worked in with measurable results-\nLooking forward to discuss in details.\n\nBest,\nIvan\n\n- Go to the point, don't be too AI looking. Spartan tone. If there is anything else in the project description that might amerit extra text, evaluate it.\n\n\nThis is an example of a proposal: \nHi, I'm a workflow automation specialist with extensive experience building AI-powered analysis systems. \nI've created similar competitor tracking workflows using n8n, including transcript parsing systems and automated Notion databases.\nRecent projects include automated transcript analysis using n8n, Zapier, and Notion API, integrated with AI models for data processing and categorization. I've helped teams reduce manual analysis time by 25+ hours weekly through similar automations.\nLooking forward to discuss in detail.\n\nBest,\nIvan\n\nJob posting:   {{ $('Telegram Trigger').item.json.message.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        940,
+        0
+      ],
+      "id": "68377097-c8f7-45b0-afa1-b227eef598ee",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "JnJlqMDcZRi5yZz4",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 208660845,
+          "message": {
+            "message_id": 18367,
+            "from": {
+              "id": 1253883192,
+              "is_bot": false,
+              "first_name": "Ivan",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 1253883192,
+              "first_name": "Ivan",
+              "type": "private"
+            },
+            "date": 1736161590,
+            "text": "N8N Matched Betting AI Workflow \n\nScripts & Utilities • Fixed Budget • $200.00 • Intermediate level • Ongoing project • Contract to hire • ⚡ 14 connects\n  \nSkills\nn8n • Python • API • Artificial Intelligence • Automation • Data Analysis • OpenAI API • Scripting & Automation\n\nAbout Client\n⭐ 5 • 6 reviews • Australia • 9 jobs • Hire rate 39% • Average rate $15.55 per hour • Spent $1,899.29 • ✅ Payment verified\n\nDescription\nI am looking to develop the following in N8N with two external API services.\na) https://the-odds-api.com/liveapi/guides/v4/#get-odds\nb) https://docs.steel.dev/overview/intro-to-steel\n\n\nIts a Matched Betting AI workflow:\n1.Create a daily profit goal. Agent\n2. Monitor my email and sms for matched betting promotions\n3.OpenAI 4o-mini analyse email and sms if promotion and breakdown\n4.Pull in live odds from GET /v4/sports/upcoming/odds/?apiKey=b0a48889b4545b4e58c1137956db330c&regions=au place in Postgres database and analyse with OpenAI 4o-mini which odds to place for matched betting. (To send matched betting logic to add to Openai)\n5. Create a list of actions to take - Agent\n6. send instructions to steel.dev API (https://docs.steel.dev/overview/intro-to-steel_ to place bets on browser.\n7. Add actions such as what was placed how much and who with in Postgres database.\n\n⏱️ 2 minutes ago",
+            "entities": [
+              {
+                "offset": 0,
+                "length": 31,
+                "type": "bold"
+              },
+              {
+                "offset": 71,
+                "length": 7,
+                "type": "bold"
+              },
+              {
+                "offset": 156,
+                "length": 6,
+                "type": "bold"
+              },
+              {
+                "offset": 276,
+                "length": 12,
+                "type": "bold"
+              },
+              {
+                "offset": 413,
+                "length": 11,
+                "type": "bold"
+              },
+              {
+                "offset": 505,
+                "length": 52,
+                "type": "url"
+              },
+              {
+                "offset": 561,
+                "length": 46,
+                "type": "url"
+              },
+              {
+                "offset": 1129,
+                "length": 9,
+                "type": "url"
+              },
+              {
+                "offset": 1144,
+                "length": 47,
+                "type": "url"
+              },
+              {
+                "offset": 1302,
+                "length": 16,
+                "type": "italic"
+              }
+            ],
+            "link_preview_options": {
+              "url": "https://the-odds-api.com/liveapi/guides/v4/"
+            }
+          }
+        }
+      }
+    ]
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-12-27T20:57:11.000Z",
-  "versionId": "b6ba3d95-363c-4812-b301-9821aee27151"
+  "updatedAt": "2025-01-16T03:32:41.000Z",
+  "versionId": "5b5044d6-30e4-4531-b363-cf4dd0a1fae3"
 }
