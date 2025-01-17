@@ -44,6 +44,17 @@
           }
         ]
       ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-12-27T19:51:43.850Z",
@@ -61,8 +72,8 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.1,
       "position": [
-        0,
-        0
+        -160,
+        -340
       ],
       "id": "2ae2731d-f9c8-432f-9b21-dbdc0299faa7",
       "name": "Telegram Trigger",
@@ -72,7 +83,8 @@
           "id": "KUDPSwACHXZk7PQt",
           "name": "Telegram account"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -85,7 +97,7 @@
         "messages": {
           "values": [
             {
-              "content": "=I am a workflow automation specialist. I'm looking to apply for jobs related to my expertise that is automating business processes, repetitive tasks. Things that can be solved using tools like Zapier, Make.com or n8n are my favorites and I am ideally looking for jobs that could be eventually be targets to offer my Business Workflow automation subscription. I also accept jobs related to Google looker.  I'm definitely not looking for secondary job titles such as project manager, web developer or backend developer. Please assess the following UPWORK job posting and decide if it's relevant to my skill set:  \n\n {{ $json.message.text }}\n\nOnly answer with Yes or No"
+              "content": "=I am a workflow automation specialist. I'm looking to apply for jobs related to my expertise that is automating business processes, repetitive tasks. Things that can be solved using no-code automation tools are my favorites. \n- I'm definitely not looking for secondary job titles such as project manager, web developer or backend developer. \n\n- Please assess the following UPWORK job posting and decide if it's relevant to my skill set:  \n\nJob Title:{{ $json.body.title }}\nJob Description: {{ $json.body.description }}\n\nOnly answer with Yes or No"
             }
           ]
         },
@@ -109,13 +121,13 @@
     {
       "parameters": {
         "chatId": "@upworkybotardo",
-        "text": "={{ $('Telegram Trigger').item.json.message.text }}\n\n\nProposal: \n\n{{ $json.message.content }}\n",
+        "text": "={{ $('Webhook').item.json.body.title }}\n{{ $('Webhook').item.json.body.description }}\n\nLink: {{ $('Webhook').item.json.body.url }}\nProposal: \n\n{{ $json.message.content }}\n",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1800,
+        1460,
         0
       ],
       "id": "42fee6ce-b896-422c-ba41-2042ae9757bc",
@@ -182,7 +194,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Create a proposal for the upwork job posting following this structure: \nHi,\n- introduce yourself as workflow automation specialist-\n- include 1 or 2 similar projects you've worked in with measurable results-\nLooking forward to discuss in details.\n\nBest,\nIvan\n\n- Go to the point, don't be too AI looking. Spartan tone. If there is anything else in the project description that might amerit extra text, evaluate it.\n\n\nThis is an example of a proposal: \nHi, I'm a workflow automation specialist with extensive experience building AI-powered analysis systems. \nI've created similar competitor tracking workflows using n8n, including transcript parsing systems and automated Notion databases.\nRecent projects include automated transcript analysis using n8n, Zapier, and Notion API, integrated with AI models for data processing and categorization. I've helped teams reduce manual analysis time by 25+ hours weekly through similar automations.\nLooking forward to discuss in detail.\n\nBest,\nIvan\n\nJob posting:   {{ $('Telegram Trigger').item.json.message.text }}"
+              "content": "=Create a proposal for the upwork job posting following this structure: \nHi,\n- introduce yourself briefly as workflow automation specialist-\n- include 1 or 2 similar (but not equal) projects you've worked in with measurable results-\nLooking forward to discuss in more detail.\n\nBest,\nIvan\n\n- Go to the point, don't be too AI looking. Spartan tone. If there is anything else in the project description that might amerit extra text, evaluate it.\n\n\nThis is an example of a proposal: \nHi, I'm a workflow automation specialist with extensive experience building AI-powered analysis systems. \nI've created similar competitor tracking workflows using n8n, including transcript parsing systems and automated Notion databases.\nRecent projects include automated transcript analysis using n8n, Zapier, and Notion API, integrated with AI models for data processing and categorization. I've helped teams reduce manual analysis time by 25+ hours weekly through similar automations.\nLooking forward to discuss in detail.\n\nBest,\nIvan\n\nJob posting:  {{ $('Webhook').item.json.body.title }}\n{{ $('Webhook').item.json.body.description }}"
             }
           ]
         },
@@ -202,6 +214,22 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "8123af0e-260b-46ad-a831-646883c2340e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "81898205-8a0f-4cae-94fd-df404675aa4b",
+      "name": "Webhook",
+      "webhookId": "8123af0e-260b-46ad-a831-646883c2340e"
     }
   ],
   "pinData": {
@@ -282,6 +310,81 @@
           }
         }
       }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.freddyflows.com",
+            "user-agent": "node",
+            "content-length": "2132",
+            "accept": "*/*",
+            "accept-encoding": "br, gzip, deflate",
+            "accept-language": "*",
+            "content-type": "application/json",
+            "sec-fetch-mode": "cors",
+            "x-forwarded-for": "34.168.253.122",
+            "x-forwarded-host": "n8n.freddyflows.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "createdAt": "2025-01-17T17:08:05.907Z",
+            "updatedAt": "2025-01-17T17:08:05.907Z",
+            "postedAt": "2025-01-17T17:07:21.797Z",
+            "categoryGroup": "Web, Mobile & Software Dev",
+            "category": "Scripts & Utilities",
+            "title": "Web Scraping API Specialist for Form Automation",
+            "description": "Seeking a skilled freelancer to automate form submissions using a web scraping API. The target form has a number of requirements:\n1. Anti-bot detection\n2. Captcha solving\n3. Form submission (ideally via request, but open to other approaches)\n4. State management across multiple steps (acquiring and then submitting confirmation pin)\n\nThe ideal candidate would be able to successfully automate the process using my existing solving services (2captcha for captcha solving, and zenrows (or your proposed alternative) scraping API).\n\nLooking for experience in using API providers to automate web form interactions. You will be responsible for developing a reliable solution that efficiently submits data to specified web forms, from initial submission through to confirmation. Strong attention to detail and problem-solving skills are required to ensure accuracy and compliance with web standards.\n\nSuccessful completion of this job could lead to a longer term engagement covering additional web forms.",
+            "locationCheckRequired": false,
+            "countries": [],
+            "regions": [],
+            "budget": null,
+            "budgetType": "HOURLY",
+            "hourlyFrom": 8,
+            "hourlyTo": 25,
+            "more30HoursPerWeek": false,
+            "featured": false,
+            "experience": "INTERMEDIATE",
+            "oneTimeProject": true,
+            "onGoingProject": false,
+            "contractToHire": true,
+            "questions": [
+              "Describe your recent experience with similar projects",
+              "What frameworks have you worked with?"
+            ],
+            "skills": [
+              "Automation",
+              "Python",
+              "API",
+              "Data Scraping",
+              "Zenrows",
+              "Web Scraping Software",
+              "ScrapingAPI",
+              "Scripting & Automation"
+            ],
+            "url": "https://www.upwork.com/jobs/~021880300890813293961",
+            "clientRating": 5,
+            "clientReviewsCount": 1,
+            "clientCountry": "United States",
+            "clientTotalJobs": 2,
+            "clientTotalHires": 2,
+            "clientSpent": 424.99,
+            "clientHireRate": 0.5,
+            "clientAverageRate": 36.25,
+            "clientPaymentVerified": true,
+            "clientEnterprise": false,
+            "connectsCost": 13,
+            "feedNames": [
+              "Automations"
+            ],
+            "hashTags": []
+          },
+          "webhookUrl": "https://n8n.freddyflows.com/webhook/8123af0e-260b-46ad-a831-646883c2340e",
+          "executionMode": "production"
+        }
+      }
     ]
   },
   "settings": {
@@ -290,6 +393,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-16T03:32:41.000Z",
-  "versionId": "5b5044d6-30e4-4531-b363-cf4dd0a1fae3"
+  "updatedAt": "2025-01-17T17:50:03.000Z",
+  "versionId": "1f78ecb6-0229-4803-80c2-311ba244e04b"
 }
