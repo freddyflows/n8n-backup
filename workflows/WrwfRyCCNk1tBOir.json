@@ -808,6 +808,42 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1OzZ9aMPb7AJgVyPwymWfeEhCGEXDygpj",
+          "mode": "list",
+          "cachedResultName": "Meeting Transcriptions",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1OzZ9aMPb7AJgVyPwymWfeEhCGEXDygpj"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        120
+      ],
+      "id": "bdd21345-fe24-4c55-95a1-489e1500679e",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jCMIXTganM2sf0Sp",
+          "name": "Google Drive account"
+        }
+      },
+      "disabled": true
     }
   ],
   "pinData": {
@@ -845,12 +881,15 @@
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1736738282
+        "lastTimeChecked": 1737149651
       }
+    },
+    "node:Google Drive Trigger": {
+      "lastTimeChecked": "2025-01-17T19:53:32Z"
     }
   },
   "tags": [],
   "triggerCount": 2,
-  "updatedAt": "2025-01-13T03:18:02.000Z",
-  "versionId": "e517f4e2-a055-440d-a5c9-ed7eb3bf9d37"
+  "updatedAt": "2025-01-17T21:34:11.000Z",
+  "versionId": "c3a06bf5-26f3-46ed-a87b-51a3b72e3db4"
 }
