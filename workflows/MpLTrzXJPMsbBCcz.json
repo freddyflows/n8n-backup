@@ -194,7 +194,11 @@
         "messages": {
           "values": [
             {
-              "content": "=Create a proposal for the upwork job posting following this structure: \nHi,\n- introduce yourself briefly as workflow automation specialist-\n- include 1 or 2 similar (but not equal) projects you've worked in with measurable results-\nLooking forward to discuss in more detail.\n\nBest,\nIvan\n\n- Go to the point, don't be too AI looking. Spartan tone. If there is anything else in the project description that might amerit extra text, evaluate it.\n\n\nThis is an example of a proposal: \nHi, I'm a workflow automation specialist with extensive experience building AI-powered analysis systems. \nI've created similar competitor tracking workflows using n8n, including transcript parsing systems and automated Notion databases.\nRecent projects include automated transcript analysis using n8n, Zapier, and Notion API, integrated with AI models for data processing and categorization. I've helped teams reduce manual analysis time by 25+ hours weekly through similar automations.\nLooking forward to discuss in detail.\n\nBest,\nIvan\n\nJob posting:  {{ $('Webhook').item.json.body.title }}\n{{ $('Webhook').item.json.body.description }}"
+              "content": "=Create a proposal for the upwork job posting following this structure: \nHi,\n- introduce yourself briefly as workflow automation specialist-\n- include 1 or 2 similar (but not equal) projects you've worked in with measurable results-\nEnding: Looking forward to discuss in more detail.\n\nBest,\nIvan\n\n- Use simple language for non-technical\n- Spartan tone. \n- Stay below 700 characters\n\nThis is an example of the structure: Hi, I'm a workflow automation specialist and I've built some of the type of AI-powered automations you're looking for, including audio-to-content pipelines and AI-driven social media systems.\n\nRecent projects include automated content generation using Claude and GPT 4o API, multi-channel social scheduling and audio transcription workflows. I've helped clients save 30+ hours weekly through similar automations.\n\n\n\nLooking forward to discuss in detail.\n\n\nBest,\nIvan\n\n\nJob posting:  {{ $('Webhook').item.json.body.title }}\n{{ $('Webhook').item.json.body.description }}"
+            },
+            {
+              "content": "You are a copywriter expert in upwork proposals and trained into not looking AI like when writting.",
+              "role": "system"
             }
           ]
         },
@@ -393,6 +397,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-17T17:50:03.000Z",
-  "versionId": "1f78ecb6-0229-4803-80c2-311ba244e04b"
+  "updatedAt": "2025-01-20T19:05:36.000Z",
+  "versionId": "4f6a4f00-8b06-4861-a3bc-56a95fd5e7be"
 }
