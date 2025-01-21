@@ -22,6 +22,17 @@
           }
         ]
       ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-01-19T22:08:39.923Z",
@@ -57,7 +68,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        680,
+        520,
         0
       ],
       "id": "de1d17c8-8071-47ea-927f-fb2ffe7ec289",
@@ -75,8 +86,17 @@
           "conditions": [
             {
               "id": "28657a1e-7ccc-4a30-810a-60a7dde76218",
-              "leftValue": "{{ $now.day() }}",
-              "rightValue": "=6",
+              "leftValue": "={{ $json[\"Day of week\"] }}",
+              "rightValue": "=Sunday",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "0c500dd5-b5bf-47be-a0cb-68da583665d8",
+              "leftValue": "={{ $json[\"Day of week\"] }}",
+              "rightValue": "Saturday",
               "operator": {
                 "type": "string",
                 "operation": "notEquals"
@@ -95,6 +115,25 @@
       ],
       "id": "2385eaa1-5776-4237-be27-a05fa84c4b72",
       "name": "Filter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        240
+      ],
+      "id": "5b62fc73-8728-483b-a149-b326ea8b3379",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JnJlqMDcZRi5yZz4",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -104,6 +143,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-01-19T22:08:39.923Z",
-  "versionId": "0149e104-f356-4ac8-ba98-1f9e1d637ea7"
+  "updatedAt": "2025-01-20T13:11:21.000Z",
+  "versionId": "c837a091-dbb2-479d-8af6-378c72e81a39"
 }
