@@ -1,0 +1,18 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-01-22T14:23:27.801Z",
+  "id": "F2XYZBvMIq6p4Lpb",
+  "meta": null,
+  "name": "Create blog posts abt AI Agents from tavily",
+  "nodes": [],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-22T14:23:27.801Z",
+  "versionId": "a4771873-d843-4357-a594-1dc04c1c584b"
+}
