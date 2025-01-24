@@ -1,11 +1,327 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "Get news": {
+      "main": [
+        []
+      ]
+    },
+    "Check for similar in Airtable": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Perplexity Makes research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Ideas Generator Expert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Title": {
+      "main": [
+        [
+          {
+            "node": "Check for similar in Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Ideas Generator Expert",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "ai_tool": [
+        [
+          {
+            "node": "Ideas Generator Expert",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ideas Generator": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Ideas Generator Expert",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ideas Generator Expert": {
+      "main": [
+        []
+      ]
+    }
+  },
   "createdAt": "2025-01-22T14:23:27.801Z",
   "id": "F2XYZBvMIq6p4Lpb",
-  "meta": null,
-  "name": "Create blog posts abt AI Agents from tavily",
-  "nodes": [],
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Create blog posts from topic",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"api_key\": \"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\",\n    \"query\": \"{{ $json[\"Topic to Research\"] }}\",\n    \"search_depth\": \"basic\",\n    \"include_images\": true,\n    \"max_results\": 5,\n    \"time_range\": \"month\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        -420
+      ],
+      "id": "8204b757-be69-4a9d-91ae-eaa2dfb11565",
+      "name": "Get news"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1680,
+        -500
+      ],
+      "id": "8af74ccb-1d8c-4820-9305-500d15ba51f7",
+      "name": "Check for similar in Airtable",
+      "credentials": {
+        "openAiApi": {
+          "id": "JnJlqMDcZRi5yZz4",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2720,
+        -240
+      ],
+      "id": "2d1e4d59-b344-48b6-8521-e6eece9d8e06",
+      "name": "Perplexity Makes research",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2220,
+        -460
+      ],
+      "id": "5676f944-c0b6-4909-8f48-696f7366eb0c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "formTitle": "Content Creation System",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Topic to Research",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        0
+      ],
+      "id": "c4a9aef6-9143-45a0-8b9b-d9ab60e6ee8e",
+      "name": "On form submission",
+      "webhookId": "0829007a-0fd0-4779-acac-c6c3967b7591"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Are there topics with empty content?\nIf yes, return Yes.\nIf no, return No."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        920,
+        -520
+      ],
+      "id": "d481fafa-e194-48de-8344-9b31ae7954b1",
+      "name": "Create Title",
+      "credentials": {
+        "openAiApi": {
+          "id": "JnJlqMDcZRi5yZz4",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        240
+      ],
+      "id": "8a66044d-438a-435e-b821-beee1c83c247",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JnJlqMDcZRi5yZz4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appAe7A9nRlBQYnvJ",
+          "mode": "list",
+          "cachedResultName": "Content Generation",
+          "cachedResultUrl": "https://airtable.com/appAe7A9nRlBQYnvJ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbltvNBHJ3fcSLJRh",
+          "mode": "list",
+          "cachedResultName": "Blog Contentful",
+          "cachedResultUrl": "https://airtable.com/appAe7A9nRlBQYnvJ/tbltvNBHJ3fcSLJRh"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        680,
+        240
+      ],
+      "id": "0f809618-3666-4144-a557-dc748b77f274",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "EUVtRR6G16rrZDGL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"title\": \"California\",\n    \"title2\": \"California\",\n    \"title3\": \"California\",\n    \"title4\": \"California\",\n    \"title5\": \"California\",\n    \"title6\": \"California\",\n    \"title7\": \"California\",\n    \"title8\": \"California\",\n    \"title9\": \"California\",\n    \"title10\": \"California\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        220
+      ],
+      "id": "71ec6086-21a0-4183-b535-ea4e23565acd",
+      "name": "Ideas Generator"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Topic: {{ $json[\"Topic to Research\"] }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a specialized AI content idea generator focused on AI Agents and Workflow Automation. Your goal is to generate fresh, innovative blog post ideas that provide value to professionals interested in AI automation and workflows.\n\nInput processing:\n\n1) Analyze the provided RSS feed content for current trends and topics\n2) Check Airtable for existing titles to avoid duplicates\n3) If duplicates are found, generate new ideas with unique angles\n\nRequirements for each idea:\n\n- Must start with \"Post about\"\n- Focus on practical use cases\n- Cover new tools and innovations\n- Address real business applications\n- Target technical and business audiences\n\nContent themes to cover:\n\n- AI agent implementations\n- Workflow automation solutions\n- Integration case studies\n- New tools and technologies\n- Best practices and strategies\n\nFormat your output as exactly 10 lines:\nPost about [idea 1]\nPost about [idea 2]\n[continue until idea 10]\nEnsure each idea is:\n\nUnique from existing content\nSpecific and actionable\nRelevant to current trends\nValuable to the target audience"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        500,
+        0
+      ],
+      "id": "f334c640-2732-4f81-ad1e-be3c1ca9b9c4",
+      "name": "Ideas Generator Expert"
+    }
+  ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
@@ -13,6 +329,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-01-22T14:23:27.801Z",
-  "versionId": "a4771873-d843-4357-a594-1dc04c1c584b"
+  "updatedAt": "2025-01-23T14:44:17.000Z",
+  "versionId": "7f3c3bd7-2b83-45b8-b0dd-ef33cb754308"
 }
