@@ -1,0 +1,645 @@
+{
+  "active": false,
+  "connections": {
+    "Get Video": {
+      "main": [
+        [
+          {
+            "node": "If video processing completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If video processing completed": {
+      "main": [
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "1 min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video id": {
+      "main": [
+        [
+          {
+            "node": "1 min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set type & script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set type & script": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Short": {
+      "main": [
+        [
+          {
+            "node": "Get Video id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Long": {
+      "main": [
+        [
+          {
+            "node": "Get Video id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Generate Short",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Long",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1 min": {
+      "main": [
+        [
+          {
+            "node": "Get Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-23T20:59:29.368Z",
+  "id": "8PyWwgAwlCDxeSHh",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Create video with V.Avatar Heygen and E.Labs voice",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v1/video_status.get",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "video_id",
+              "value": "={{ $('Get Video id').item.json.video_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b848649e-5a6c-4e67-9c8a-035a505181e9",
+      "name": "Get Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get Video').item.json.data.video_url }}",
+        "options": {}
+      },
+      "id": "7b23f98d-eb42-43d1-94ba-82603f92bc40",
+      "name": "Download Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        280
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b33d55b4-a2e2-404a-9dfe-38d13f1ae59f",
+              "leftValue": "={{ $json.data.status }}",
+              "rightValue": "processing",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        860,
+        280
+      ],
+      "id": "51e42c33-c64f-46a2-b4a0-473e63b11d7d",
+      "name": "If video processing completed"
+    },
+    {
+      "parameters": {
+        "content": "## Inputs\nSet script & type (short, long-form)",
+        "height": 340,
+        "width": 380,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -700,
+        180
+      ],
+      "typeVersion": 1,
+      "id": "721f6d3b-5f18-4afa-a492-8bbbee1e0c4a",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Generate Video\nUse HeyGen to generate AI Short",
+        "height": 340,
+        "width": 680,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -300,
+        180
+      ],
+      "typeVersion": 1,
+      "id": "5bc65871-5d06-4736-b249-67f4e920cf65",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Wait for AI Video to be Processed\nWait for HeyGen to generate the AI video. Can take up to 15min.",
+        "height": 340,
+        "width": 660,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        180
+      ],
+      "typeVersion": 1,
+      "id": "894923a6-5eed-4047-9225-1a5a6f5bcf49",
+      "name": "Sticky Note5",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Download video\nDownloads the video",
+        "height": 340,
+        "width": 280,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1080,
+        180
+      ],
+      "typeVersion": 1,
+      "id": "6f66ae95-3623-4a3e-a8a2-c42dc0b62a69",
+      "name": "Sticky Note6",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/templates",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -640,
+        660
+      ],
+      "id": "39086d2c-56a4-4df7-add1-44b2e85b7984",
+      "name": "get HeyGen templates"
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v1/video_status.get",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "video_id",
+              "value": "=91a3c6b6f7b546fcb356099800b41f69"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "20b7e296-94be-4f92-8735-f87dd6772de0",
+      "name": "Get Video1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## HeyGen helpers\nHelps with debugging. See the [docs](https://docs.heygen.com/docs/generate-video-from-template-v2#template-scene-guidelines).",
+        "height": 300,
+        "width": 1140,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -700,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "c4d45c1c-3f09-4a40-8f70-fa1ce5e53231",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "027964fd-a653-4fbd-8e90-b86a35423b6a",
+              "name": "video_id",
+              "value": "={{ $json.data.video_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        280
+      ],
+      "id": "f0488bf8-15a1-4ee8-a09b-4b9399d18de8",
+      "name": "Get Video id"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/template/8203da3d462048d7981c08a7e59e4093/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"template_id\": \"8203da3d462048d7981c08a7e59e4093\",\n \"variables\": {\n    \"script1\": {\n      \"name\": \"script1\",\n      \"type\": \"text\",\n      \"properties\": {\n        \"content\": \"Stop wasting hours parsing API documentation; connect to any API in minutes with AI assistance. Let's do a quick demo. We're setting up an HTTP request for the Tav API without touching any documentation. Watch this. We import a cURL command from Perplexity, which pulls the latest API format for us. There it is. The request is prefilled with headers and parameters, just missing the secure authorization key. We add our encrypted API key using generic credentials. Test the request... and success! Our query returns the latest data from Tav. Full step-by-step guide is on my channel.\"\n      }\n    }\n  }\n   \n}",
+        "options": {}
+      },
+      "id": "68f32d95-f2f3-41f8-ad8b-3bff8b3c63d0",
+      "name": "Generate Video from template",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -200,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/template/8203da3d462048d7981c08a7e59e4093",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -420,
+        660
+      ],
+      "id": "7d23b883-4e6d-44d6-86c7-21ab01c12344",
+      "name": "Get template variables"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"4b838eea1846409ab926b533bf745a4c\",\n        \"avatar_style\": \"normal\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": \"Stop wasting hours parsing API documentation; connect to any API in minutes with AI assistance. Let's do a quick demo. We're setting up an HTTP request for the Tav API without touching any documentation. Watch this. We import a cURL command from Perplexity, which pulls the latest API format for us. There it is. The request is prefilled with headers and parameters, just missing the secure authorization key. We add our encrypted API key using generic credentials. Test the request... and success! Our query returns the latest data from Tavily. Full step-by-step guide is on my channel.\",\n        \"voice_id\": \"0efb19d720a14047a46da6bbaa0104c8\"\n      }\n    }\n  ],\n  \"caption\": false,\n\"dimension\": {\n    \"width\": 1280,\n    \"height\": 720\n  }\n}",
+        "options": {}
+      },
+      "id": "80c652ba-5fc7-4db0-890b-4ada0728c29f",
+      "name": "Generate Video from avatar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        660
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        300
+      ],
+      "id": "773229cf-24b3-45be-adff-cb55c6c51edf",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "027964fd-a653-4fbd-8e90-b86a35423b6a",
+              "name": "type",
+              "value": "=long",
+              "type": "string"
+            },
+            {
+              "id": "180b6c10-1225-4cfa-9e1f-6c4b5f669965",
+              "name": "script",
+              "value": "=go to my channel and subscribe we've got some awesome templates to help you smash it with AI Agents\n\nGO TO MY CHANNEL, AND SUBSCRIBE! We've got some awesome templates to help you... smash it with AI Agents!\n\n\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        300
+      ],
+      "id": "f5d69878-92c8-4fd1-b27e-0c26efc5626d",
+      "name": "Set type & script"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/template/8203da3d462048d7981c08a7e59e4093/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"template_id\": \"UPDATE THIS WITH YOUR OWN!!\",\n \"variables\": {\n    \"script1\": {\n      \"name\": \"script1\",\n      \"type\": \"text\",\n      \"properties\": {\n        \"content\": \"{{ $('Switch').item.json.script.replace(/\\n+/g, ' ').replace(/\\s+/g, ' ').trim()}}\"\n      }\n    }\n  }\n   \n}",
+        "options": {}
+      },
+      "id": "ceaa8df2-e910-4992-b580-b6467564042d",
+      "name": "Generate Short",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        200
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"4b838eea1846409ab926b533bf745a4c\",\n        \"avatar_style\": \"normal\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": \"{{ $('Switch').item.json.script.replace(/\\n+/g, ' ').replace(/\\s+/g, ' ').trim()}}\",\n        \"voice_id\": \"0efb19d720a14047a46da6bbaa0104c8\"\n      }\n    }\n  ],\n  \"caption\": false,\n\"dimension\": {\n    \"width\": 1280,\n    \"height\": 720\n  }\n}",
+        "options": {}
+      },
+      "id": "5558d4ee-cb8e-4736-9831-2b7e9c65e4a9",
+      "name": "Generate Long",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        360
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "short",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "short"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a271cbad-6c9d-47b7-90df-53e1c759fdfc",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "long",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "long"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -280,
+        300
+      ],
+      "id": "687950c4-052c-424d-9311-d5aabf717073",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        280
+      ],
+      "id": "fadd21e2-5c95-48d3-87de-3e35df8af510",
+      "name": "1 min",
+      "webhookId": "172e9b7f-9287-4eae-a6c1-dc085ce16725"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"4b838eea1846409ab926b533bf745a4c\",\n        \"avatar_style\": \"normal\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": \"{{ $('Switch').item.json.script.replace(/\\n+/g, ' ').replace(/\\s+/g, ' ').trim()}}\",\n        \"voice_id\": \"0efb19d720a14047a46da6bbaa0104c8\"\n      }\n    }\n  ],\n  \"caption\": false,\n\"dimension\": {\n    \"width\": 540,\n    \"height\": 960\n  }\n}",
+        "options": {}
+      },
+      "id": "fa08537a-8c20-4810-95d1-6fededd5fbbe",
+      "name": "Generate Shorts (without template)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Update the script here :)",
+        "height": 80,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        440
+      ],
+      "id": "7a76b5ec-1710-4273-9c9a-3ca0be04aa5b",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-23T20:58:25.046Z",
+      "updatedAt": "2025-01-23T20:58:25.046Z",
+      "id": "B8WxiN6adCWIkIRC",
+      "name": "YouTube"
+    },
+    {
+      "createdAt": "2025-01-23T20:58:25.036Z",
+      "updatedAt": "2025-01-23T20:58:25.036Z",
+      "id": "F2XsACcu5XMds8M0",
+      "name": "Video"
+    },
+    {
+      "createdAt": "2025-01-23T20:58:25.018Z",
+      "updatedAt": "2025-01-23T20:58:25.018Z",
+      "id": "xTyxETJIe4mJfs0t",
+      "name": "Content"
+    },
+    {
+      "createdAt": "2025-01-23T20:58:24.997Z",
+      "updatedAt": "2025-01-23T20:58:24.997Z",
+      "id": "zfmV0WGwy3VapRYg",
+      "name": "AI agent"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-23T20:59:29.368Z",
+  "versionId": "4aa3e8e6-b11e-48e5-9a53-8c94a100182e"
+}
